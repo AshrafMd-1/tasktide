@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Alkatra&family=Berkshire+Swash&family=Oswald:wght@300&family=Permanent+Marker&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.font-permanent-marker {
+    font-family: "Permanent Marker", cursive;
+}
+
+.font-berkshire-swash {
+    font-family: "Berkshire Swash", cursive;
+}
+
+.font-alkatra {
+    font-family: "Alkatra", cursive;
+}
