@@ -3,6 +3,7 @@ import { Main } from "./Main";
 import backgroundImg from "./background.jpg";
 
 export const HomePage = () => {
+
   return (
     <div
       className="bg-cover  bg-fixed"

@@ -1,3 +1,5 @@
+import { Link } from "raviger";
+
 export const Main = () => {
   return (
     <main className="flex flex-col justify-center items-center flex-grow">
@@ -15,18 +17,18 @@ export const Main = () => {
         </p>
       </div>
       <div className="mt-8 flex space-x-4">
-        <a
+        <Link
           href="/signup"
           className="btn font-bold tracking-wider border-2 border-white text-white bg-transparent py-4 px-6 text-center no-underline text-base mt-10 transition-all duration-500 ease-in-out rounded-3xl hover:bg-white hover:text-black hover:text-2xl"
         >
           Get Started
-        </a>
-        <a
+        </Link>
+        <Link
           href="/login"
           className="btn font-bold tracking-wider border-2 border-white text-white bg-transparent py-4 px-6 text-center no-underline text-base mt-10 transition-all duration-500 ease-in-out rounded-3xl hover:bg-white hover:text-black hover:text-2xl"
         >
           Login
-        </a>
+        </Link>
       </div>
     </main>
   );
