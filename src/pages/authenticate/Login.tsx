@@ -1,7 +1,8 @@
 import { AuthContainer } from "./AuthContainer";
 import { useReducer, useState} from "react";
-import { LoginUser } from "../types/RequestTypes";
-import { LoginReducerAction } from "../types/AuthReducerTypes";
+import { LoginUser } from "../../types/RequestTypes";
+import { LoginReducerAction } from "../../types/AuthReducerTypes";
+import {navigate} from "raviger";
 
 
 const reducer = (state: LoginUser, action: LoginReducerAction) => {
@@ -23,6 +24,16 @@ const initialState: LoginUser = {
 export const Login = () => {
   const [formDate, dispatch] = useReducer(reducer, initialState);
   const [remember, setRemember] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const user =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (user) {
+      return user;
+    }
+    return null;
+  });
+
+  if(currentUser) navigate("/dashboard")
 
 
   return (

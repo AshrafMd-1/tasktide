@@ -16,7 +16,7 @@ export const Main = () => {
           with TaskTide. Start today!
         </p>
       </div>
-      <div className="mt-8 flex space-x-4">
+      <div className="mt-8 flex space-x-4 justify-center items-center">
         <Link
           href="/signup"
           className="btn font-bold tracking-wider border-2 border-white text-white bg-transparent py-4 px-6 text-center no-underline text-base mt-10 transition-all duration-500 ease-in-out rounded-3xl hover:bg-white hover:text-black hover:text-2xl"

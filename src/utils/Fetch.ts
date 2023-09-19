@@ -1,4 +1,4 @@
-import { LoginUser, RegisterUser } from "../types/RequestTypes";
+import { ManageBoard, LoginUser, RegisterUser } from "../types/RequestTypes";
 
 const API_BASE_URL = "https://reactforall.onrender.com/api/";
 
@@ -19,8 +19,9 @@ const request = async (
     url = API_BASE_URL + endpoint;
     payload = data ? JSON.stringify(data) : "";
   }
-  const token = localStorage.getItem("token");
-  const auth = token ? "Token " + localStorage.getItem("token") : "";
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+  const auth = token ? "Token " + token : "";
 
   const response = await fetch(url, {
     method,
@@ -51,6 +52,30 @@ export const newRegistration = async (data: RegisterUser) => {
 
 export const getProfile = async () => {
   return await request("users/me/", "GET");
-}
+};
 
+export const createBoard = async (data: ManageBoard) => {
+  return await request("boards/", "POST", data);
+};
 
+export const getBoards = async () => {
+  return await request("boards/", "GET");
+};
+export const logout = async () => {
+  return await request("auth/logout/", "POST");
+};
+
+export const deleteBoard = async (id: number) => {
+  return await request(`boards/${id}/`, "DELETE");
+};
+
+export const getBoardDetail = async (id: number) => {
+  return await request(`boards/${id}/`, "GET");
+};
+
+export const updateBoard = async (id: number, data: ManageBoard) => {
+  return await request(`boards/${id}/`, "PATCH", data);
+};
+export const getTasks = async (id: number) => {
+  return await request(`boards/${id}/tasks/`, "GET");
+};

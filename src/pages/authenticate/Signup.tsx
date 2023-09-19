@@ -1,7 +1,8 @@
 import { AuthContainer } from "./AuthContainer";
 import { useReducer, useState } from "react";
-import { RegisterUser } from "../types/RequestTypes";
-import { SignupReducerAction } from "../types/AuthReducerTypes";
+import { RegisterUser } from "../../types/RequestTypes";
+import { SignupReducerAction } from "../../types/AuthReducerTypes";
+import {navigate} from "raviger";
 
 const reducer = (state: RegisterUser, action: SignupReducerAction) => {
   switch (action.type) {
@@ -27,6 +28,16 @@ const initialState: RegisterUser = {
 export const Signup = () => {
   const [formDate, dispatch] = useReducer(reducer, initialState);
   const [remember, setRemember] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const user =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (user) {
+      return user;
+    }
+    return null;
+  });
+
+  if(currentUser) navigate("/dashboard")
 
   return (
     <AuthContainer

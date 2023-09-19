@@ -1,12 +1,11 @@
-import logo from "../assets/images/logo.png";
+import logo from "../../assets/images/logo.png";
 import React from "react";
-import { ActiveLink } from "raviger";
+import { ActiveLink, navigate } from "raviger";
+import { logout } from "../../utils/Fetch";
 
-export const DashboardContainer = (props: {
-  children: React.ReactNode;
-}) => {
+export const DashboardContainer = (props: { children: React.ReactNode }) => {
   return (
-    <div className="relative bg-yellow-50 overflow-hidden max-h-screen ">
+    <div className="relative bg-yellow-50 overflow-hidden h-screen ">
       <div className="fixed inset-y-0 left-0 bg-white shadow-md max-h-screen w-25">
         <div className="flex flex-col justify-between h-full">
           <div className="flex-grow">
@@ -22,8 +21,8 @@ export const DashboardContainer = (props: {
                 <li>
                   <ActiveLink
                     href="/dashboard"
-                    className="flex items-center bg-yellow-200 rounded-xl font-bold text-sm text-yellow-900 py-3 px-4"
-                    exactActiveClass="bg-yellow-50"
+                    className="flex items-center hover:bg-yellow-50 rounded-xl font-bold text-sm text-gray-900 py-3 px-4"
+                    exactActiveClass="bg-yellow-200 text-yellow-900 hover:bg-yellow-300 hover:text-yellow-900"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -39,9 +38,9 @@ export const DashboardContainer = (props: {
                 </li>
                 <li>
                   <ActiveLink
-                    href="/dashboard/boards"
+                    href="/boards"
                     className="flex bg-white hover:bg-yellow-50 rounded-xl font-bold text-sm text-gray-900 py-3 px-4"
-                    exactActiveClass="bg-yellow-50"
+                    exactActiveClass="bg-yellow-200 text-yellow-900 hover:text-yellow-900 hover:bg-yellow-300"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -60,9 +59,9 @@ export const DashboardContainer = (props: {
                 </li>
                 <li>
                   <ActiveLink
-                    href="/dashboard/todo"
+                    href="/todo"
                     className="flex bg-white hover:bg-yellow-50 rounded-xl font-bold text-sm text-gray-900 py-3 px-4"
-                    exactActiveClass="bg-yellow-50"
+                    exactActiveClass="bg-yellow-200 text-yellow-900 hover:text-yellow-900 hover:bg-yellow-900"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -82,6 +81,17 @@ export const DashboardContainer = (props: {
             <button
               type="button"
               className="inline-flex items-center justify-center h-9 px-4 rounded-xl bg-gray-900 text-gray-300 hover:text-white text-sm font-semibold transition"
+              onClick={async () => {
+                await logout()
+                  .then(() => {
+                    localStorage.removeItem("token");
+                    sessionStorage.removeItem("token");
+                    navigate("/login");
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +110,6 @@ export const DashboardContainer = (props: {
       </div>
       <div className="ml-60 pt-16 max-h-screen overflow-auto">
         {props.children}
-        {/*<div className="px-6 py-4">{props.descriptionChildren}</div>*/}
       </div>
     </div>
   );

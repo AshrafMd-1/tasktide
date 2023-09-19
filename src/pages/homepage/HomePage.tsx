@@ -1,8 +1,20 @@
 import { Header } from "./Header";
 import { Main } from "./Main";
 import backgroundImg from "./background.jpg";
+import { useState } from "react";
+import {navigate} from "raviger";
 
 export const HomePage = () => {
+  const [currentUser, setCurrentUser] = useState(() => {
+    const user =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (user) {
+      return user;
+    }
+    return null;
+  });
+
+  if(currentUser) navigate("/dashboard")
 
   return (
     <div
