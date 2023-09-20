@@ -1,8 +1,8 @@
-import { AuthContainer } from "./AuthContainer";
+import { AuthContainer } from "../AuthContainer";
 import { useReducer, useState } from "react";
-import { RegisterUser } from "../../types/RequestTypes";
-import { SignupReducerAction } from "../../types/AuthReducerTypes";
-import {navigate} from "raviger";
+import { RegisterUser } from "../../../types/RequestTypes";
+import { SignupReducerAction } from "../../../types/AuthReducerTypes";
+import { navigate } from "raviger";
 
 const reducer = (state: RegisterUser, action: SignupReducerAction) => {
   switch (action.type) {
@@ -37,7 +37,7 @@ export const Signup = () => {
     return null;
   });
 
-  if(currentUser) navigate("/dashboard")
+  if (currentUser) navigate("/dashboard");
 
   return (
     <AuthContainer

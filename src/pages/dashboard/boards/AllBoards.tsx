@@ -1,8 +1,8 @@
 import { DashboardContainer } from "../DashboardContainer";
 import { useState } from "react";
 import Modal from "../../../components/Modal";
-import { CreateBoard } from "./CreateBoard";
-import {BoardDisplay} from "./BoardDisplay";
+import { CreateBoard } from "./manage boards/CreateBoard";
+import { BoardDisplay } from "./BoardDisplay";
 
 export const AllBoards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

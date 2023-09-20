@@ -14,7 +14,9 @@ export const ErrorPage = (props: {
               {props.status}
             </h1>
             <h1 className="text-6xl font-medium py-8">{props.message}</h1>
-            <p className="text-2xl pb-8 px-12 font-medium">{props.description}</p>
+            <p className="text-2xl pb-8 px-12 font-medium">
+              {props.description}
+            </p>
             <button
               className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md mr-6"
               onClick={() => navigate("/")}

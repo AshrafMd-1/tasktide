@@ -1,8 +1,8 @@
 import { Header } from "./Header";
 import { Main } from "./Main";
-import backgroundImg from "./background.jpg";
+import backgroundImg from "./assets/images/background.jpg";
 import { useState } from "react";
-import {navigate} from "raviger";
+import { navigate } from "raviger";
 
 export const HomePage = () => {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -14,7 +14,7 @@ export const HomePage = () => {
     return null;
   });
 
-  if(currentUser) navigate("/dashboard")
+  if (currentUser) navigate("/dashboard");
 
   return (
     <div

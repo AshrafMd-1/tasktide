@@ -1,14 +1,13 @@
 import { DashboardContainer } from "../DashboardContainer";
 import { useEffect, useState } from "react";
 import { CurrentUser } from "../../../types/User";
-import { getProfile } from "../../../utils/Fetch";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { LoadingScreen } from "../../../components/LoadingScreen";
+import { getProfile } from "../../../utils/FetchRequests";
 
 export const Home = () => {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [boardCount, setBoardCount] = useState(0);
 
   useEffect(() => {
     getProfile()
@@ -21,10 +20,12 @@ export const Home = () => {
       });
   }, []);
 
-
-
   if (loading) {
-    return <LoadingScreen />;
+    return (
+      <DashboardContainer>
+        <LoadingScreen />
+      </DashboardContainer>
+    );
   }
 
   if (!currentUser?.username) {
@@ -75,7 +76,6 @@ export const Home = () => {
           Current status of your account
         </p>
         <hr className="my-5" />
-
       </div>
     </DashboardContainer>
   );

@@ -1,7 +1,7 @@
 import logo from "../../assets/images/logo.png";
 import React from "react";
 import { ActiveLink, navigate } from "raviger";
-import { logout } from "../../utils/Fetch";
+import { logout } from "../../utils/FetchRequests";
 
 export const DashboardContainer = (props: { children: React.ReactNode }) => {
   return (
@@ -61,7 +61,7 @@ export const DashboardContainer = (props: { children: React.ReactNode }) => {
                   <ActiveLink
                     href="/todo"
                     className="flex bg-white hover:bg-yellow-50 rounded-xl font-bold text-sm text-gray-900 py-3 px-4"
-                    exactActiveClass="bg-yellow-200 text-yellow-900 hover:text-yellow-900 hover:bg-yellow-900"
+                    activeClass="bg-yellow-200 text-yellow-900 hover:text-yellow-900 hover:bg-yellow-300"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

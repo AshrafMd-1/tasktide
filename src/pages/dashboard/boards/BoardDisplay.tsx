@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { deleteBoard, getBoards } from "../../../utils/Fetch";
 import { GetBoardType } from "../../../types/DataTypes";
 import { LoadingScreen } from "../../../components/LoadingScreen";
 import Modal from "../../../components/Modal";
-import { EditBoard } from "./EditBoard";
+import { EditBoard } from "./manage boards/EditBoard";
 import { ErrorPage } from "../../../components/ErrorPage";
+import { Link } from "raviger";
+import { deleteBoard, getBoards } from "../../../utils/FetchRequests";
 
 export const BoardDisplay = () => {
   const [boardDetails, setBoardDetails] = useState<GetBoardType[]>([]);
@@ -19,12 +20,15 @@ export const BoardDisplay = () => {
     fetchBoardDetails()
       .then((res) => {
         if (res.results.length === 0) {
+          setLoading(false);
           return;
+        } else {
+          setBoardDetails(res.results);
+          setLoading(false);
         }
-        setBoardDetails(res.results);
-        setLoading(false);
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
       });
   }, []);
@@ -45,11 +49,29 @@ export const BoardDisplay = () => {
             className="bg-white shadow-lg rounded-lg px-4 py-6 w-80 m-2"
             key={board.id}
           >
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between mb-3   items-center">
               <h1 className="text-xl font-bold text-gray-800 break-all">
                 {board.title}
               </h1>
               <div className="flex justify-between items-center gap-2">
+                <Link
+                  href={`/boards/${board.id}`}
+                  className="bg-green-400 hover:bg-green-500 text-white font-semibold px-2 py-1 rounded-md"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
+                    <path
+                      fillRule="evenodd"
+                      d="M.664 10.59a1.651 1.651 0 010-1.186A10.004 10.004 0 0110 3c4.257 0 7.893 2.66 9.336 6.41.147.381.146.804 0 1.186A10.004 10.004 0 0110 17c-4.257 0-7.893-2.66-9.336-6.41zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Link>
                 <button
                   className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-2 py-1 rounded-md"
                   onClick={() => {

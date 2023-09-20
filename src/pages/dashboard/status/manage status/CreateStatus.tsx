@@ -1,33 +1,37 @@
 import { useState } from "react";
-import { ManageBoard } from "../../../types/RequestTypes";
-import { createBoard } from "../../../utils/Fetch";
-import {navigate} from "raviger";
+import { ManageStatus } from "../../../../types/RequestTypes";
+import { createStatus } from "../../../../utils/FetchRequests";
 
-export const CreateBoard = (props: {
+export const CreateStatus = (props: {
   setIsModalOpenCB: (value: boolean) => void;
+  id: string;
 }) => {
-  const [boardData, setBoardData] = useState<ManageBoard>({
+  const [statusData, setStatusData] = useState<ManageStatus>({
     title: "",
     description: "",
   });
+
   const error = {
     title: "",
     description: "",
   };
 
-  const submitBoard = async () => {
-    if (boardData.title === "") {
+  const submitStatus = async () => {
+    if (statusData.title === "") {
       error.title = "Title is required";
     }
-    if (boardData.description === "") {
+    if (statusData.description === "") {
       error.description = "Description is required";
     }
     if (error.title !== "" || error.description !== "") {
       return;
     }
-    await createBoard(boardData);
+    await createStatus({
+      ...statusData,
+      description: statusData.description + "|BOARD|" + props.id,
+    });
     window.location.reload();
-    setBoardData({
+    setStatusData({
       title: "",
       description: "",
     });
@@ -37,7 +41,7 @@ export const CreateBoard = (props: {
   return (
     <div className="flex justify-center items-center flex-col">
       <div className="mx-auto">
-        <h1 className="text-4xl text-gray-800">Create Board</h1>
+        <h1 className="text-4xl text-gray-800">Create List</h1>
       </div>
       <hr className="my-5 w-3/4 mx-auto border-2 border-gray-500 rounded-lg" />
       <form>
@@ -50,13 +54,13 @@ export const CreateBoard = (props: {
               Title
             </label>
             <input
-              value={boardData.title}
+              value={statusData.title}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="title"
               id="title"
               onChange={(e) =>
-                setBoardData({ ...boardData, title: e.target.value })
+                setStatusData({ ...statusData, title: e.target.value })
               }
             />
             <label className="text-xl text-center text-red-500">
@@ -71,13 +75,13 @@ export const CreateBoard = (props: {
               Description
             </label>
             <input
-              value={boardData.description}
+              value={statusData.description}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="description"
               id="description"
               onChange={(e) =>
-                setBoardData({ ...boardData, description: e.target.value })
+                setStatusData({ ...statusData, description: e.target.value })
               }
             />
             <label className="text-xl text-center text-red-500">
@@ -89,7 +93,7 @@ export const CreateBoard = (props: {
           <button
             onClick={(e) => {
               e.preventDefault();
-              submitBoard();
+              submitStatus();
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >

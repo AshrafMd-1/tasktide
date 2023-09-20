@@ -1,56 +1,18 @@
-import { useEffect, useState } from "react";
-import { ManageBoard } from "../../../types/RequestTypes";
-import { getBoardDetail, updateBoard } from "../../../utils/Fetch";
-import { LoadingScreen } from "../../../components/LoadingScreen";
-import { ErrorPage } from "../../../components/ErrorPage";
+import { useState } from "react";
+import { ManageBoard } from "../../../../types/RequestTypes";
+import { createBoard } from "../../../../utils/FetchRequests";
 
-export const EditBoard = (props: {
+export const CreateBoard = (props: {
   setIsModalOpenCB: (value: boolean) => void;
-  boardId: number;
 }) => {
   const [boardData, setBoardData] = useState<ManageBoard>({
     title: "",
     description: "",
   });
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(true);
   const error = {
     title: "",
     description: "",
   };
-
-  useEffect(() => {
-    const fetchBoardDetails = async () => {
-      return await getBoardDetail(props.boardId);
-    };
-    fetchBoardDetails()
-      .then((res) => {
-        if (res.title.length === 0) {
-          setNotFound(true);
-          return;
-        }
-        setBoardData(res);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setNotFound(true);
-        console.log(err);
-      });
-  }, [props.boardId]);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (notFound) {
-    return (
-      <ErrorPage
-        status="204"
-        message="No Content Found"
-        description="The requested content could not be found."
-      />
-    );
-  }
 
   const submitBoard = async () => {
     if (boardData.title === "") {
@@ -62,7 +24,7 @@ export const EditBoard = (props: {
     if (error.title !== "" || error.description !== "") {
       return;
     }
-    await updateBoard(props.boardId, boardData);
+    await createBoard(boardData);
     window.location.reload();
     setBoardData({
       title: "",
@@ -74,7 +36,7 @@ export const EditBoard = (props: {
   return (
     <div className="flex justify-center items-center flex-col">
       <div className="mx-auto">
-        <h1 className="text-4xl text-gray-800">Edit Board</h1>
+        <h1 className="text-4xl text-gray-800">Create Board</h1>
       </div>
       <hr className="my-5 w-3/4 mx-auto border-2 border-gray-500 rounded-lg" />
       <form>
@@ -130,7 +92,7 @@ export const EditBoard = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Update
+            Create
           </button>
         </div>
       </form>

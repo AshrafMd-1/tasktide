@@ -2,7 +2,7 @@ import logo from "../../assets/images/logo.png";
 import React from "react";
 import { Link, navigate } from "raviger";
 import { LoginUser, RegisterUser } from "../../types/RequestTypes";
-import { login, newRegistration } from "../../utils/Fetch";
+import { login, newRegistration } from "../../utils/FetchRequests";
 
 export const AuthContainer = (props: {
   children: React.ReactNode;

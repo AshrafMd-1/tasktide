@@ -1,10 +1,11 @@
 import { useRoutes } from "raviger";
 import { HomePage } from "./pages/homepage/HomePage";
-import { Login } from "./pages/authenticate/Login";
-import { Signup } from "./pages/authenticate/Signup";
+import { Login } from "./pages/authenticate/auth/Login";
+import { Signup } from "./pages/authenticate/auth/Signup";
 import { Home } from "./pages/dashboard/home/Home";
 import { ErrorPage } from "./components/ErrorPage";
-import {AllBoards} from "./pages/dashboard/boards/AllBoards";
+import { AllBoards } from "./pages/dashboard/boards/AllBoards";
+import { AllStatus } from "./pages/dashboard/status/AllStatus";
 
 const routes = {
   "/": () => <HomePage />,
@@ -12,6 +13,7 @@ const routes = {
   "/signup": () => <Signup />,
   "/dashboard": () => <Home />,
   "/boards": () => <AllBoards />,
+  "/boards/:id": ({ id }: { id: string }) => <AllStatus id={id} />,
   "*": () => (
     <ErrorPage
       status={"404"}

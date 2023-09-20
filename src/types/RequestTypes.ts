@@ -1,3 +1,5 @@
+import { GetBoardType, GetStatusType } from "./DataTypes";
+
 export type RegisterUser = {
   email: string;
   username: string;
@@ -13,4 +15,19 @@ export type LoginUser = {
 export type ManageBoard = {
   title: string;
   description: string;
+};
+
+export type ManageStatus = {
+  title: string;
+  description: string;
+};
+
+export type ManageTask = {
+  id?: number;
+  board_object: GetBoardType;
+  status_object: GetStatusType;
+  status: number;
+  title: string;
+  description: string;
+  board?: number;
 };
