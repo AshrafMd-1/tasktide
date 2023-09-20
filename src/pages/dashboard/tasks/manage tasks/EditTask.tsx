@@ -137,7 +137,7 @@ export const EditTasks = (props: {
   return (
     <div className="flex justify-center items-center flex-col">
       <div className="mx-auto">
-        <h1 className="text-4xl text-gray-800">Create Task</h1>
+        <h1 className="text-4xl text-gray-800">Update Task</h1>
       </div>
       <hr className="my-5 w-3/4 mx-auto border-2 border-gray-500 rounded-lg" />
       <form>
@@ -258,7 +258,7 @@ export const EditTasks = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Create
+            Update
           </button>
         </div>
       </form>

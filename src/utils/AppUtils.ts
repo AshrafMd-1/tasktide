@@ -22,7 +22,7 @@ export const DaysRemaining = (dueDate: string) => {
   const today = new Date();
   const due = new Date(dueDate);
   const diff = due.getTime() - today.getTime();
-  if (diff < 0) return 0;
+  if (diff < 0) return diff;
   return Math.ceil(diff / (1000 * 3600 * 24));
 };
 
@@ -76,15 +76,24 @@ export const TaskSorterBasedOnPriorityAndDateAndCompleted = (
   return tasks.sort((a, b) => {
     const aPriority = a.description.split("|")[3].split(":")[1];
     const bPriority = b.description.split("|")[3].split(":")[1];
-    const aDueDate = a.description.split("|")[1].split(":")[1];
-    const bDueDate = b.description.split("|")[1].split(":")[1];
-    const aCompleted = a.description.split("|")[2].split(":")[1];
-    const bCompleted = b.description.split("|")[2].split(":")[1];
-    if (aCompleted === "true" && bCompleted === "false") return 1;
-    if (aPriority === "High" && bPriority === "Medium") return -1;
-    if (aPriority === "High" && bPriority === "Low") return -1;
-    if (aPriority === "Medium" && bPriority === "Low") return -1;
+    const aDueDate = new Date(a.description.split("|")[1].split(":")[1]);
+    const bDueDate = new Date(b.description.split("|")[1].split(":")[1]);
+    const aCompleted = a.description.split("|")[2].split(":")[1] === "true";
+    const bCompleted = b.description.split("|")[2].split(":")[1] === "true";
+
+    // First, check for completed status
+    if (aCompleted && !bCompleted) return 1;
+    if (!aCompleted && bCompleted) return -1;
+
+    // Then, check for due date
     if (aDueDate < bDueDate) return -1;
-    return 1;
+    if (aDueDate > bDueDate) return 1;
+
+    // Finally, prioritize "High" over "Medium" and "Low" for priority
+    if (aPriority === "High" && bPriority !== "High") return -1;
+    if (aPriority !== "High" && bPriority === "High") return 1;
+
+    // If all else fails, tasks are considered equal
+    return 0;
   });
 };

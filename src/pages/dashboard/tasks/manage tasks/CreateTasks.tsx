@@ -17,7 +17,7 @@ export const CreateTasks = (props: {
   const [taskData, setTaskData] = useState<GetTaskType>({
     title: "",
     description: "",
-    priority: "",
+    priority: "Low",
     due_date: "",
     completed: false,
   });
@@ -77,7 +77,7 @@ export const CreateTasks = (props: {
     setTaskData({
       title: "",
       description: "",
-      priority: "",
+      priority: "Low",
       due_date: "",
       completed: false,
     });
@@ -87,7 +87,7 @@ export const CreateTasks = (props: {
   return (
     <div className="flex justify-center items-center flex-col">
       <div className="mx-auto">
-        <h1 className="text-4xl text-gray-800">Create Task</h1>
+        <h1 className="text-4xl text-gray-800">Add Task</h1>
       </div>
       <hr className="my-5 w-3/4 mx-auto border-2 border-gray-500 rounded-lg" />
       <form>
@@ -136,7 +136,7 @@ export const CreateTasks = (props: {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <label
-              className="text-2xl font-bold text-center text-gray-800"
+              className="text-2xl  font-bold text-center text-gray-800"
               htmlFor="priority"
             >
               priority
@@ -208,7 +208,7 @@ export const CreateTasks = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Create
+            Add
           </button>
         </div>
       </form>

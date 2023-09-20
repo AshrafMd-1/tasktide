@@ -1,16 +1,26 @@
-import { GetTaskType } from "../../../types/DataTypes";
+import {
+  GetBoardType,
+  GetStatusType,
+  GetTaskType,
+} from "../../../types/DataTypes";
 import {
   DaysRemaining,
   GetCompleteDaysRemainingComponent,
   GetDateColor,
   GetPriorityColor,
 } from "../../../utils/AppUtils";
-import { deleteTask } from "../../../utils/FetchRequests";
+import { deleteTask, updateTask } from "../../../utils/FetchRequests";
+import { useState } from "react";
+import Modal from "../../../components/Modal";
+import { EditTasks } from "./manage tasks/EditTask";
+import { ManageTask } from "../../../types/RequestTypes";
 
 export const DisplayTasks = (props: {
   taskData: GetTaskType;
-  boardId: number;
+  boardData: GetBoardType;
+  statusData: GetStatusType;
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   return (
     <div
       className="flex flex-col justify-between items-center bg-white rounded-lg shadow-lg p-5 m-2 border-b-4 border-black"
@@ -27,9 +37,70 @@ export const DisplayTasks = (props: {
         </div>
         <div className="flex justify-between items-start ml-auto gap-2">
           <button
+            className="text-white font-bold px-2 py-1 rounded-md"
+            style={{
+              backgroundColor: props.taskData.completed ? "red" : "green",
+            }}
+            onClick={async () => {
+              if (
+                props.taskData.id === undefined ||
+                props.boardData.id === undefined ||
+                props.statusData.id === undefined
+              )
+                return;
+              const payload: ManageTask = {
+                board_object: {
+                  title: props.boardData.title,
+                  description: props.boardData.description,
+                },
+                status_object: {
+                  title: props.statusData.title,
+                  description: props.statusData.description,
+                },
+                status: props.statusData.id,
+                title: props.taskData.title,
+                description:
+                  props.taskData.description +
+                  "|dueDate:" +
+                  props.taskData.due_date +
+                  "|completed:" +
+                  !props.taskData.completed +
+                  "|priority:" +
+                  props.taskData.priority,
+                board: props.boardData.id,
+              };
+              await updateTask(props.taskData.id, payload, props.boardData.id);
+              window.location.reload();
+            }}
+          >
+            {props.taskData.completed ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </button>
+          <button
             className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-2 py-1 rounded-md"
             onClick={() => {
-              console.log("edit");
+              setIsModalOpen(true);
             }}
           >
             <svg
@@ -47,11 +118,12 @@ export const DisplayTasks = (props: {
             onClick={async () => {
               if (
                 props.taskData.id === undefined ||
-                !window.confirm("Are you sure you want to delete this board?")
+                props.boardData.id === undefined ||
+                !window.confirm("Are you sure you want to delete this task?")
               ) {
                 return;
               }
-              await deleteTask(props.taskData.id, props.boardId)
+              await deleteTask(props.taskData.id, props.boardData.id)
                 .then(() => {
                   window.location.reload();
                 })
@@ -80,13 +152,17 @@ export const DisplayTasks = (props: {
       <div className="flex justify-between items-center w-80">
         <div className="flex justify-between items-center flex-col">
           <h1 className=" font-bold text-gray-800">Due Date</h1>
-          <p
-            className=" text-gray-800 border-b-4 rounded-lg p-2"
-            style={{ borderColor: GetDateColor(props.taskData.due_date) }}
-          >
-            {GetCompleteDaysRemainingComponent(props.taskData.due_date)}{" "}
-            {DaysRemaining(props.taskData.due_date)} days
-          </p>
+          {props.taskData.completed ? (
+            <p className=" text-gray-800 p-2">--- </p>
+          ) : (
+            <p
+              className=" text-gray-800 border-b-4 rounded-lg p-2"
+              style={{ borderColor: GetDateColor(props.taskData.due_date) }}
+            >
+              {GetCompleteDaysRemainingComponent(props.taskData.due_date)}{" "}
+              {DaysRemaining(props.taskData.due_date)} days
+            </p>
+          )}
         </div>
         <div className="flex justify-between items-center flex-col">
           <h1 className=" font-bold text-gray-800">Completed</h1>
@@ -122,14 +198,28 @@ export const DisplayTasks = (props: {
         </div>
         <div className="flex justify-between items-center  flex-col">
           <h1 className=" font-bold text-gray-800">Priority</h1>
-          <p
-            className=" text-gray-800 border-b-4 rounded-lg p-2"
-            style={{ borderColor: GetPriorityColor(props.taskData.priority) }}
-          >
-            {props.taskData.priority}
-          </p>
+          {props.taskData.completed ? (
+            <p className=" text-gray-800 p-2">--- </p>
+          ) : (
+            <p
+              className=" text-gray-800 border-b-4 rounded-lg p-2"
+              style={{ borderColor: GetPriorityColor(props.taskData.priority) }}
+            >
+              {props.taskData.priority}
+            </p>
+          )}
         </div>
       </div>
+      {props.taskData.id && (
+        <Modal open={isModalOpen} closeCB={() => setIsModalOpen(false)}>
+          <EditTasks
+            statusData={props.statusData}
+            boardData={props.boardData}
+            setIsModalOpenCB={setIsModalOpen}
+            taskId={props.taskData.id}
+          />
+        </Modal>
+      )}
     </div>
   );
 };

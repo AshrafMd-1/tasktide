@@ -38,7 +38,11 @@ export const BoardDisplay = () => {
   }
 
   if (boardDetails.length === 0) {
-    return <h1>No boards found</h1>;
+    return (
+      <h1 className="text-2xl font-bold text-gray-800 text-center mt-4">
+        No boards found, Please create a board.
+      </h1>
+    );
   }
 
   return (

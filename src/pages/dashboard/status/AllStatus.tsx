@@ -57,18 +57,6 @@ export const AllStatus = (props: { id: string }) => {
     );
   }
 
-  if (statusData.length === 0) {
-    return (
-      <DashboardContainer>
-        <div className="flex justify-between items-center">
-          <h1 className="text-4xl text-gray-800">
-            No statuses found. Please create a status to continue.
-          </h1>
-        </div>
-      </DashboardContainer>
-    );
-  }
-
   if (boardData.title === "" && statusData.length === 0) {
     return (
       <ErrorPage
@@ -92,7 +80,7 @@ export const AllStatus = (props: { id: string }) => {
           </button>
         </div>
         <div className="flex justify-between items-center">
-          <div className="flex gap-4 flex-wrap justify-center">
+          <div className="flex gap-4 items-start justify-center">
             {statusData.map(
               (status) =>
                 boardData.id &&
@@ -113,7 +101,7 @@ export const AllStatus = (props: { id: string }) => {
                 status.description.split("|BOARD|")[1] ===
                   boardData.id.toString(),
             ).length === 0 && (
-              <h1 className="text-2xl mt-2 text-center text-gray-800">
+              <h1 className="text-2xl font-bold text-gray-800 text-center mt-4">
                 No statuses found. Please create a status to continue.
               </h1>
             )}

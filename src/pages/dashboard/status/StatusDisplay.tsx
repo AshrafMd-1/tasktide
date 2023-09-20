@@ -20,7 +20,6 @@ export const StatusDisplay = (props: {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
 
-  const taskData = TaskSorterBasedOnPriorityAndDateAndCompleted(props.taskData);
   return (
     <div className="bg-white flex flex-col  shadow-lg rounded-lg px-4 py-6 w-100 m-2">
       <div className="flex justify-between mb-3 gap-3  items-center">
@@ -49,7 +48,7 @@ export const StatusDisplay = (props: {
             onClick={async () => {
               if (
                 props.statusData.id === undefined ||
-                !window.confirm("Are you sure you want to delete this board?")
+                !window.confirm("Are you sure you want to delete this list?")
               ) {
                 return;
               }
@@ -83,15 +82,19 @@ export const StatusDisplay = (props: {
         </p>
       </div>
       <div className="flex justify-between items-center flex-col flex-wrap p-4 bg-gray-200 rounded-lg mt-3">
-        {taskData.map(
+        {TaskSorterBasedOnPriorityAndDateAndCompleted(props.taskData).map(
           (task) =>
             props.boardData.id && (
               <DisplayTasks
                 taskData={TaskConverter(task)}
                 key={task.id}
-                boardId={props.boardData.id}
+                boardData={props.boardData}
+                statusData={props.statusData}
               />
             ),
+        )}
+        {props.taskData.length === 0 && (
+          <h1 className=" font-bold text-gray-800 text-center">No Tasks</h1>
         )}
       </div>
       <div className="flex justify-between items-center mt-3">
