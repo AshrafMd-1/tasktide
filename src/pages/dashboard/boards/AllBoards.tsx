@@ -3,9 +3,20 @@ import { useState } from "react";
 import Modal from "../../../components/Modal";
 import { CreateBoard } from "./manage boards/CreateBoard";
 import { BoardDisplay } from "./BoardDisplay";
+import { navigate } from "raviger";
 
 export const AllBoards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const user =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (user) {
+      return user;
+    }
+    return null;
+  });
+
+  if (!currentUser) navigate("/login");
   return (
     <DashboardContainer>
       <div>

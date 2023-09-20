@@ -22,30 +22,12 @@ export const CreateTasks = (props: {
     completed: false,
   });
 
-  const error = {
-    title: "",
-    description: "",
-    priority: "",
-    due_date: "",
-  };
-
   const submitTask = async () => {
-    if (taskData.title === "") {
-      error.title = "Title is required";
-    } else if (taskData.description === "") {
-      error.description = "Description is required";
-    } else if (taskData.priority === "") {
-      error.priority = "priority is required";
-    } else if (taskData.due_date === "") {
-      error.due_date = "Due Date is required";
-    } else if (taskData.due_date < new Date().toISOString().split("T")[0]) {
-      error.due_date = "Due Date cannot be in the past";
-    }
     if (
-      error.title !== "" ||
-      error.description !== "" ||
-      error.priority !== "" ||
-      error.due_date !== "" ||
+      taskData.title === "" ||
+      taskData.description === "" ||
+      taskData.priority === "" ||
+      taskData.due_date === "" ||
       props.statusData.id === undefined ||
       props.boardData.id === undefined
     ) {
@@ -110,7 +92,7 @@ export const CreateTasks = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.title}
+              {taskData.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -131,7 +113,7 @@ export const CreateTasks = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.description}
+              {taskData.description === "" ? "Description is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -157,7 +139,7 @@ export const CreateTasks = (props: {
               <PriorityOptions />
             </select>
             <label className="text-xl text-center text-red-500">
-              {error.priority}
+              {taskData.priority === "" ? "Priority is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -178,7 +160,7 @@ export const CreateTasks = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.due_date}
+              {taskData.due_date === "" ? "Due Date is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">

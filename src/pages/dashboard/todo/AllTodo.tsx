@@ -1,60 +1,49 @@
 import { DashboardContainer } from "../DashboardContainer";
 import { useEffect, useState } from "react";
-import {
-  GetBoardType,
-  GetStatusType,
-  GetTaskType,
-} from "../../../types/DataTypes";
+import { GetBoardType } from "../../../types/DataTypes";
 import { getBoards } from "../../../utils/FetchRequests";
 import { LoadingScreen } from "../../../components/LoadingScreen";
+import { navigate } from "raviger";
+import { DisplayTaskInTile } from "./DisplayTaskInTile";
 
 export const AllTodo = () => {
   const [boardData, setBoardData] = useState<GetBoardType[]>([]);
-  const [statusData, setStatusData] = useState<GetStatusType[]>([]);
-  const [taskData, setTaskData] = useState<GetTaskType[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [filter, setFilter] = useState({
+    priority: "",
+    dueDate: "",
+    status: "",
+  });
   const [boardId, setBoardId] = useState<number>(0);
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentUser, setCurrentUser] = useState(() => {
+    const user =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (user) {
+      return user;
+    }
+    return null;
+  });
+
   useEffect(() => {
-    const fetchBoards = async () => {
+    const fetchData = async () => {
       try {
         const boardResult = await getBoards();
-        if (boardResult.results.length === 0) return;
-        setBoardData(boardResult.results);
+        if (boardResult.results.length > 0) {
+          setBoardData(boardResult.results);
+        }
         setLoading(false);
       } catch (error) {
         setLoading(false);
         console.log(error);
       }
     };
-    fetchBoards();
+    fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const boardResult = await getBoardDetail(Number(props.id));
-  //       setBoardData(boardResult);
-  //
-  //       const statusResult = await getStatus();
-  //       if (statusResult.results.length > 0) {
-  //         setStatusData(statusResult.results);
-  //       }
-  //
-  //       const taskResult = await getTasks(boardResult.id);
-  //       if (taskResult.results.length > 0) {
-  //         setTaskData(taskResult.results);
-  //       }
-  //
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setLoading(false);
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [props.id]);
-  //
+  if (currentUser === null) {
+    navigate("/login");
+    return null;
+  }
 
   if (loading) {
     return (
@@ -69,7 +58,7 @@ export const AllTodo = () => {
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-4xl text-gray-800">Tasks Overview</h1>
       </div>
-      <div>
+      <div className="flex gap-4 flex-wrap">
         <div>
           <label htmlFor="board" className="text-gray-800 text-xl">
             Select Board
@@ -78,7 +67,9 @@ export const AllTodo = () => {
             name="board"
             id="board"
             className="block  p-2 border border-gray-300 rounded mt-2"
-            onChange={(e) => setBoardId(Number(e.target.value))}
+            onChange={(e) => {
+              setBoardId(Number(e.target.value));
+            }}
           >
             <option
               value={0}
@@ -95,76 +86,21 @@ export const AllTodo = () => {
             ))}
           </select>
         </div>
-        <div>
-          <label htmlFor="status" className="text-gray-800 text-xl">
-            Select Priority
-          </label>
-          <select
-            name="status"
-            id="status"
-            className="block  p-2 border border-gray-300 rounded mt-2"
-            onChange={(e) => setBoardId(Number(e.target.value))}
-          >
-            <option
-              value={0}
-              disabled
-              selected
-              className="text-gray-800 text-sm disabled:opacity-50"
-            >
-              Select Priority
-            </option>
-            <option value={1}>Low</option>
-            <option value={2}>Medium</option>
-            <option value={3}>High</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="dueDate" className="text-gray-800 text-xl">
-            Select Due Date
-          </label>
-          <select
-            name="dueDate"
-            id="dueDate"
-            className="block  p-2 border border-gray-300 rounded mt-2"
-            onChange={(e) => setBoardId(Number(e.target.value))}
-          >
-            <option
-              value={0}
-              disabled
-              selected
-              className="text-gray-800 text-sm disabled:opacity-50"
-            >
-              Select Due Date
-            </option>
-            <option value={-1}>Overdue</option>
-            <option value={1}>Today</option>
-            <option value={2}>Tomorrow</option>
-            <option value={3}>This Week</option>
-            <option value={4}>This Month</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="status" className="text-gray-800 text-xl">
-            Select Status
-          </label>
-          <select
-            name="status"
-            id="status"
-            className="block  p-2 border border-gray-300 rounded mt-2"
-            onChange={(e) => setBoardId(Number(e.target.value))}
-          >
-            <option
-              value={0}
-              disabled
-              selected
-              className="text-gray-800 text-sm disabled:opacity-50"
-            >
-              Select Status
-            </option>
-            <option value={2}>InComplete</option>
-            <option value={2}>Completed</option>
-          </select>
-        </div>
+      </div>
+      <div className="flex gap-4 flex-wrap">
+        {boardId === 0 ? (
+          <div className="flex justify-between mt-5 mx-auto items-center">
+            <div className="flex gap-4 flex-wrap">
+              <h1 className="text-4xl text-gray-800">Select a board</h1>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center">
+            <div className="flex gap-4 justify-center items-center flex-wrap">
+              <DisplayTaskInTile id={boardId.toString()} />
+            </div>
+          </div>
+        )}
       </div>
     </DashboardContainer>
   );

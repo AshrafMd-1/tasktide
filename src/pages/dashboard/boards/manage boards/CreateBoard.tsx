@@ -9,21 +9,10 @@ export const CreateBoard = (props: {
     title: "",
     description: "",
   });
-  const error = {
-    title: "",
-    description: "",
-  };
 
   const submitBoard = async () => {
-    if (boardData.title === "") {
-      error.title = "Title is required";
-    }
-    if (boardData.description === "") {
-      error.description = "Description is required";
-    }
-    if (error.title !== "" || error.description !== "") {
-      return;
-    }
+    if (boardData.title === "" || boardData.description === "") return;
+
     await createBoard(boardData);
     window.location.reload();
     setBoardData({
@@ -59,7 +48,7 @@ export const CreateBoard = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.title}
+              {boardData.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -80,7 +69,7 @@ export const CreateBoard = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.description}
+              {boardData.description === "" ? "Description is required" : ""}
             </label>
           </div>
         </div>

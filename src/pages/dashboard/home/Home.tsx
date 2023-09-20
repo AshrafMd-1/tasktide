@@ -92,7 +92,6 @@ export const Home = () => {
       />
     );
   }
-  console.log(taskData);
 
   return (
     <DashboardContainer>

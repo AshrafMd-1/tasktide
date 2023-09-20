@@ -15,10 +15,6 @@ export const EditStatus = (props: {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
   const [boardId, setBoardId] = useState<number>(0);
-  const error = {
-    title: "",
-    description: "",
-  };
 
   useEffect(() => {
     const fetchStatusDetails = async () => {
@@ -59,15 +55,8 @@ export const EditStatus = (props: {
   }
 
   const submitStatus = async () => {
-    if (statusData.title === "") {
-      error.title = "Title is required";
-    }
-    if (statusData.description === "") {
-      error.description = "Description is required";
-    }
-    if (error.title !== "" || error.description !== "") {
-      return;
-    }
+    if (statusData.title === "" || statusData.description === "") return;
+
     const payload = {
       title: statusData.title,
       description: statusData.description + "|BOARD|" + boardId,
@@ -107,7 +96,7 @@ export const EditStatus = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.title}
+              {statusData.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -128,7 +117,7 @@ export const EditStatus = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.description}
+              {statusData.description === "" ? "Description is required" : ""}
             </label>
           </div>
         </div>

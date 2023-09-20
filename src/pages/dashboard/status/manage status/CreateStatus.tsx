@@ -11,21 +11,9 @@ export const CreateStatus = (props: {
     description: "",
   });
 
-  const error = {
-    title: "",
-    description: "",
-  };
-
   const submitStatus = async () => {
-    if (statusData.title === "") {
-      error.title = "Title is required";
-    }
-    if (statusData.description === "") {
-      error.description = "Description is required";
-    }
-    if (error.title !== "" || error.description !== "") {
-      return;
-    }
+    if (statusData.title === "" || statusData.description === "") return;
+
     await createStatus({
       ...statusData,
       description: statusData.description + "|BOARD|" + props.id,
@@ -64,7 +52,7 @@ export const CreateStatus = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.title}
+              {statusData.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -85,7 +73,7 @@ export const CreateStatus = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.description}
+              {statusData.description === "" ? "Description is required" : ""}
             </label>
           </div>
         </div>

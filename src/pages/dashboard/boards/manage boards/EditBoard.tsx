@@ -14,10 +14,6 @@ export const EditBoard = (props: {
   });
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
-  const error = {
-    title: "",
-    description: "",
-  };
 
   useEffect(() => {
     const fetchBoardDetails = async () => {
@@ -53,13 +49,7 @@ export const EditBoard = (props: {
   }
 
   const submitBoard = async () => {
-    if (boardData.title === "") {
-      error.title = "Title is required";
-    }
-    if (boardData.description === "") {
-      error.description = "Description is required";
-    }
-    if (error.title !== "" || error.description !== "") {
+    if (boardData.title === "" || boardData.description === "") {
       return;
     }
     await updateBoard(props.boardId, boardData);
@@ -97,7 +87,7 @@ export const EditBoard = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.title}
+              {boardData.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -118,7 +108,7 @@ export const EditBoard = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.description}
+              {boardData.description === "" ? "Description is required" : ""}
             </label>
           </div>
         </div>

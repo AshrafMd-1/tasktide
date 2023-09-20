@@ -28,11 +28,14 @@ export const TaskDisplayOverview = (props: {
       <hr className="my-5" style={{ borderTop: "1px solid rgba(0,0,0,0.1)" }} />
       <div className="flex flex-col justify-between items-center">
         <h1 className="text-3xl text-center text-gray-800">{props.title}</h1>
-        <div className="flex justify-between items-center">
+        <div className="flex flex-wrap gap-3 justify-between items-center">
           {taskData.map(
             (task) =>
               conditionGiver(props.condition, task) && (
-                <div className="flex flex-col justify-between items-center bg-white rounded-lg shadow-lg p-5 m-2 border-y-4 border-black">
+                <div
+                  className="flex flex-col mx-auto flex-wrap justify-between items-center bg-white rounded-lg shadow-lg p-5 m-2 border-y-4 border-black"
+                  key={task.id}
+                >
                   <div className="flex w-80 flex-col justify-between items-center">
                     <h1 className="text-3xl break-words text-center text-gray-800">
                       {task.title}

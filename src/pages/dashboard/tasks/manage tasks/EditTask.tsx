@@ -27,13 +27,6 @@ export const EditTasks = (props: {
   const [notFound, setNotFound] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const error = {
-    title: "",
-    description: "",
-    priority: "",
-    due_date: "",
-  };
-
   useEffect(() => {
     const fetchTaskDetail = async () => {
       return (
@@ -80,24 +73,14 @@ export const EditTasks = (props: {
   }
 
   const submitTask = async () => {
-    if (taskData.title === "") {
-      error.title = "Title is required";
-    } else if (taskData.description === "") {
-      error.description = "Description is required";
-    } else if (taskData.priority === "") {
-      error.priority = "priority is required";
-    } else if (taskData.due_date === "") {
-      error.due_date = "Due Date is required";
-    } else if (taskData.due_date < new Date().toISOString().split("T")[0]) {
-      error.due_date = "Due Date cannot be in the past";
-    }
     if (
-      error.title !== "" ||
-      error.description !== "" ||
-      error.priority !== "" ||
-      error.due_date !== "" ||
+      taskData.title === "" ||
+      taskData.description === "" ||
+      taskData.priority === "" ||
+      taskData.due_date === "" ||
       props.statusData.id === undefined ||
-      props.boardData.id === undefined
+      props.boardData.id === undefined ||
+      new Date(taskData.due_date).getTime() < new Date().getTime()
     ) {
       return;
     }
@@ -160,7 +143,7 @@ export const EditTasks = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.title}
+              {taskData.title === "" ? "Title cannot be empty" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -181,7 +164,7 @@ export const EditTasks = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.description}
+              {taskData.description === "" ? "Description cannot be empty" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -207,7 +190,7 @@ export const EditTasks = (props: {
               <PriorityOptions />
             </select>
             <label className="text-xl text-center text-red-500">
-              {error.priority}
+              {taskData.priority === "" ? "Priority is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -228,7 +211,10 @@ export const EditTasks = (props: {
               }
             />
             <label className="text-xl text-center text-red-500">
-              {error.due_date}
+              {taskData.due_date === "" ? "Due Date is required" : ""}
+              {new Date(taskData.due_date).getTime() < new Date().getTime()
+                ? "Due Date cannot be in the past"
+                : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">

@@ -80,20 +80,12 @@ export const TaskSorterBasedOnPriorityAndDateAndCompleted = (
     const bDueDate = new Date(b.description.split("|")[1].split(":")[1]);
     const aCompleted = a.description.split("|")[2].split(":")[1] === "true";
     const bCompleted = b.description.split("|")[2].split(":")[1] === "true";
-
-    // First, check for completed status
     if (aCompleted && !bCompleted) return 1;
     if (!aCompleted && bCompleted) return -1;
-
-    // Then, check for due date
     if (aDueDate < bDueDate) return -1;
     if (aDueDate > bDueDate) return 1;
-
-    // Finally, prioritize "High" over "Medium" and "Low" for priority
     if (aPriority === "High" && bPriority !== "High") return -1;
     if (aPriority !== "High" && bPriority === "High") return 1;
-
-    // If all else fails, tasks are considered equal
     return 0;
   });
 };

@@ -13,6 +13,7 @@ import { GetBoardType, GetStatusType } from "../../../types/DataTypes";
 import { StatusDisplay } from "./StatusDisplay";
 import { ManageTask } from "../../../types/RequestTypes";
 import { TaskSorterBasedOnStatus } from "../../../utils/AppUtils";
+import { navigate } from "raviger";
 
 export const AllStatus = (props: { id: string }) => {
   const [boardData, setBoardData] = useState<GetBoardType>({
@@ -23,7 +24,14 @@ export const AllStatus = (props: { id: string }) => {
   const [taskData, setTaskData] = useState<ManageTask[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+  const [currentUser, setCurrentUser] = useState(() => {
+    const user =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (user) {
+      return user;
+    }
+    return null;
+  });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,6 +56,11 @@ export const AllStatus = (props: { id: string }) => {
     };
     fetchData();
   }, [props.id]);
+
+  if (currentUser === null) {
+    navigate("/login");
+    return null;
+  }
 
   if (loading) {
     return (
@@ -80,7 +93,7 @@ export const AllStatus = (props: { id: string }) => {
           </button>
         </div>
         <div className="flex justify-between items-center">
-          <div className="flex gap-4 items-start justify-center">
+          <div className="flex gap-4 flex-wrap">
             {statusData.map(
               (status) =>
                 boardData.id &&
