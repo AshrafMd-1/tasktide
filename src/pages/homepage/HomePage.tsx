@@ -5,7 +5,7 @@ import { useState } from "react";
 import { navigate } from "raviger";
 
 export const HomePage = () => {
-  const [currentUser, setCurrentUser] = useState(() => {
+  const [currentUser] = useState(() => {
     const user =
       localStorage.getItem("token") || sessionStorage.getItem("token");
     if (user) {

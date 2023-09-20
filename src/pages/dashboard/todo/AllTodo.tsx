@@ -8,14 +8,9 @@ import { DisplayTaskInTile } from "./DisplayTaskInTile";
 
 export const AllTodo = () => {
   const [boardData, setBoardData] = useState<GetBoardType[]>([]);
-  const [filter, setFilter] = useState({
-    priority: "",
-    dueDate: "",
-    status: "",
-  });
   const [boardId, setBoardId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [currentUser, setCurrentUser] = useState(() => {
+  const [currentUser] = useState(() => {
     const user =
       localStorage.getItem("token") || sessionStorage.getItem("token");
     if (user) {

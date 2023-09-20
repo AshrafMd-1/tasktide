@@ -38,7 +38,7 @@ export const EditStatus = (props: {
         setNotFound(true);
         console.log(err);
       });
-  }, [props.statusId]);
+  }, [props.statusId, statusData]);
 
   if (loading) {
     return <LoadingScreen />;

@@ -28,7 +28,7 @@ const initialState: RegisterUser = {
 export const Signup = () => {
   const [formDate, dispatch] = useReducer(reducer, initialState);
   const [remember, setRemember] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState(() => {
+  const [currentUser] = useState(() => {
     const user =
       localStorage.getItem("token") || sessionStorage.getItem("token");
     if (user) {
