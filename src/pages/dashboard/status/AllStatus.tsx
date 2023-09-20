@@ -24,7 +24,7 @@ export const AllStatus = (props: { id: string }) => {
   const [taskData, setTaskData] = useState<ManageTask[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState(() => {
+  const [currentUser] = useState(() => {
     const user =
       localStorage.getItem("token") || sessionStorage.getItem("token");
     if (user) {

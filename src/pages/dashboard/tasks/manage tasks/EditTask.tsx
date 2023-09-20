@@ -56,7 +56,7 @@ export const EditTasks = (props: {
         setNotFound(true);
         console.log(err);
       });
-  }, [props.taskId]);
+  }, [props.taskId, props.boardData.id, props.statusData.id]);
 
   if (loading) {
     return <LoadingScreen />;
