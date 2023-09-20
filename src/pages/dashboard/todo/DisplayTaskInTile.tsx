@@ -57,7 +57,14 @@ export const DisplayTaskInTile = (props: { id: string }) => {
   });
 
   if (loading) {
-    return <LoadingScreen />;
+    return (
+      <div
+        className="flex justify-center items-center"
+        style={{ height: "calc(100vh - 64px)" }}
+      >
+        <LoadingScreen />
+      </div>
+    );
   }
 
   if (boardData.title === "" && statusData.length === 0) {

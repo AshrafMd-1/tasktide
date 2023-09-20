@@ -66,17 +66,13 @@ export const AllTodo = () => {
           <select
             name="board"
             id="board"
+            defaultValue={0}
             className="block  p-2 border border-gray-300 rounded mt-2"
             onChange={(e) => {
               setBoardId(Number(e.target.value));
             }}
           >
-            <option
-              value={0}
-              disabled
-              selected
-              className="text-gray-800 text-sm disabled:opacity-50"
-            >
+            <option disabled value={0}>
               Select Board
             </option>
             {boardData.map((board) => (
