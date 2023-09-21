@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://reactforall.onrender.com/api/";
+const API_BASE_URL = "https://shyamdjangoreactapi.onrender.com/api/";
 
 type RequestMethod = "GET" | "POST" | "PATCH" | "DELETE" | "PUT";
 
