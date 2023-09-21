@@ -15,7 +15,7 @@ export const BoardDisplay = (props: {
 }) => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { setBoardDataCB } = props;
   useEffect(() => {
     const fetchBoardDetails = async () => {
       return await getBoards();
@@ -26,7 +26,7 @@ export const BoardDisplay = (props: {
           setLoading(false);
           return;
         } else {
-          props.setBoardDataCB(res.results);
+          setBoardDataCB(res.results);
           setLoading(false);
         }
       })
@@ -34,7 +34,7 @@ export const BoardDisplay = (props: {
         setLoading(false);
         console.log(err);
       });
-  }, []);
+  }, [setBoardDataCB]);
 
   if (loading) {
     return <LoadingScreen />;
