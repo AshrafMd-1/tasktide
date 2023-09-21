@@ -8,6 +8,7 @@ import {
   GetCompleteDaysRemainingComponent,
   GetDateColor,
   GetPriorityColor,
+  TaskConverter,
 } from "../../../utils/AppUtils";
 import { deleteTask, updateTask } from "../../../utils/FetchRequests";
 import { useState } from "react";
@@ -16,36 +17,47 @@ import { EditTasks } from "./manage tasks/EditTask";
 import { ManageTask } from "../../../types/RequestTypes";
 
 export const DisplayTasks = (props: {
-  taskData: GetTaskType;
+  taskId: number;
   boardData: GetBoardType;
   statusData: GetStatusType;
   allTasks: ManageTask[];
   setAllTasksCB: (value: ManageTask[]) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [task] = useState<GetTaskType>(() => {
+    const currentTask = props.allTasks.find((item) => item.id === props.taskId);
+    if (currentTask !== undefined) {
+      return TaskConverter(currentTask);
+    }
+    return {
+      title: "",
+      description: "",
+      priority: "",
+      due_date: "",
+      completed: false,
+    };
+  });
   return (
     <div
       className="flex flex-col justify-between items-center bg-white rounded-lg shadow-lg p-5 m-2 border-b-4 border-black"
-      style={{ opacity: props.taskData.completed ? 0.5 : 1 }}
+      style={{ opacity: task.completed ? 0.5 : 1 }}
     >
       <div className="flex w-80 ">
         <div className="flex flex-col justify-between items-start">
-          <h1 className="text-2xl break-words text-gray-800">
-            {props.taskData.title}
-          </h1>
+          <h1 className="text-2xl break-words text-gray-800">{task.title}</h1>
           <p className="text-sm break-words text-gray-800">
-            {props.taskData.description}
+            {task.description}
           </p>
         </div>
         <div className="flex justify-between items-start ml-auto gap-2">
           <button
             className="text-white font-bold px-2 py-1 rounded-md"
             style={{
-              backgroundColor: props.taskData.completed ? "red" : "green",
+              backgroundColor: task.completed ? "red" : "green",
             }}
             onClick={async () => {
               if (
-                props.taskData.id === undefined ||
+                task.id === undefined ||
                 props.boardData.id === undefined ||
                 props.statusData.id === undefined
               )
@@ -60,25 +72,25 @@ export const DisplayTasks = (props: {
                   description: props.statusData.description,
                 },
                 status: props.statusData.id,
-                title: props.taskData.title,
+                title: task.title,
                 description:
-                  props.taskData.description +
+                  task.description +
                   "|dueDate:" +
-                  props.taskData.due_date +
+                  task.due_date +
                   "|completed:" +
-                  !props.taskData.completed +
+                  !task.completed +
                   "|priority:" +
-                  props.taskData.priority,
+                  task.priority,
                 board: props.boardData.id,
               };
               const allTasks = props.allTasks.filter(
-                (item) => item.id !== props.taskData.id,
+                (item) => item.id !== task.id,
               );
               props.setAllTasksCB([...allTasks, payload]);
-              await updateTask(props.taskData.id, payload, props.boardData.id);
+              await updateTask(task.id, payload, props.boardData.id);
             }}
           >
-            {props.taskData.completed ? (
+            {task.completed ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
@@ -122,21 +134,19 @@ export const DisplayTasks = (props: {
             className="bg-red-400 hover:bg-red-500 text-white font-semibold px-2 py-1 rounded-md"
             onClick={async () => {
               if (
-                props.taskData.id === undefined ||
+                task.id === undefined ||
                 props.boardData.id === undefined ||
                 !window.confirm("Are you sure you want to delete this task?")
               ) {
                 return;
               }
               const allTasks = props.allTasks.filter(
-                (item) => item.id !== props.taskData.id,
+                (item) => item.id !== task.id,
               );
               props.setAllTasksCB(allTasks);
-              await deleteTask(props.taskData.id, props.boardData.id).catch(
-                (err) => {
-                  console.log(err);
-                },
-              );
+              await deleteTask(task.id, props.boardData.id).catch((err) => {
+                console.log(err);
+              });
             }}
           >
             <svg
@@ -159,26 +169,26 @@ export const DisplayTasks = (props: {
       <div className="flex justify-between items-center w-80">
         <div className="flex justify-between items-center flex-col">
           <h1 className=" font-bold text-gray-800">Due Date</h1>
-          {props.taskData.completed ? (
+          {task.completed ? (
             <p className=" text-gray-800 p-2">--- </p>
           ) : (
             <p
               className=" text-gray-800 border-b-4 rounded-lg p-2"
-              style={{ borderColor: GetDateColor(props.taskData.due_date) }}
+              style={{ borderColor: GetDateColor(task.due_date) }}
             >
-              {GetCompleteDaysRemainingComponent(props.taskData.due_date)}{" "}
-              {DaysRemaining(props.taskData.due_date)} days
+              {GetCompleteDaysRemainingComponent(task.due_date)}{" "}
+              {DaysRemaining(task.due_date)} days
             </p>
           )}
         </div>
         <div className="flex justify-between items-center flex-col">
           <h1 className=" font-bold text-gray-800">Completed</h1>
           <p className="mt-1 text-gray-800">
-            {props.taskData.completed ? (
+            {task.completed ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                fill={props.taskData.completed ? "green" : "red"}
+                fill={task.completed ? "green" : "red"}
                 className="w-10 h-10"
               >
                 <path
@@ -191,7 +201,7 @@ export const DisplayTasks = (props: {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
-                fill={props.taskData.completed ? "green" : "red"}
+                fill={task.completed ? "green" : "red"}
                 className="w-10 h-10"
               >
                 <path
@@ -205,25 +215,25 @@ export const DisplayTasks = (props: {
         </div>
         <div className="flex justify-between items-center  flex-col">
           <h1 className=" font-bold text-gray-800">Priority</h1>
-          {props.taskData.completed ? (
+          {task.completed ? (
             <p className=" text-gray-800 p-2">--- </p>
           ) : (
             <p
               className=" text-gray-800 border-b-4 rounded-lg p-2"
-              style={{ borderColor: GetPriorityColor(props.taskData.priority) }}
+              style={{ borderColor: GetPriorityColor(task.priority) }}
             >
-              {props.taskData.priority}
+              {task.priority}
             </p>
           )}
         </div>
       </div>
-      {props.taskData.id && (
+      {task.id && (
         <Modal open={isModalOpen} closeCB={() => setIsModalOpen(false)}>
           <EditTasks
             statusData={props.statusData}
             boardData={props.boardData}
             setIsModalOpenCB={setIsModalOpen}
-            taskId={props.taskData.id}
+            taskId={task.id}
             allTasks={props.allTasks}
             setAllTasksCB={(value: ManageTask[]) => props.setAllTasksCB(value)}
           />

@@ -4,10 +4,7 @@ import Modal from "../../../components/Modal";
 import { CreateTasks } from "../tasks/manage tasks/CreateTasks";
 import { ManageTask } from "../../../types/RequestTypes";
 import { DisplayTasks } from "../tasks/DisplayTasks";
-import {
-  TaskConverter,
-  TaskSorterBasedOnPriorityAndDateAndCompleted,
-} from "../../../utils/AppUtils";
+import { TaskSorterBasedOnPriorityAndDateAndCompleted } from "../../../utils/AppUtils";
 import { deleteStatus } from "../../../utils/FetchRequests";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { EditStatus } from "./manage status/EditStatus";
@@ -87,9 +84,10 @@ export const StatusDisplay = (props: {
       <div className="flex justify-between items-center flex-col flex-wrap p-4 bg-gray-200 rounded-lg mt-3">
         {TaskSorterBasedOnPriorityAndDateAndCompleted(props.taskData).map(
           (task) =>
-            props.boardData.id && (
+            props.boardData.id &&
+            task.id && (
               <DisplayTasks
-                taskData={TaskConverter(task)}
+                taskId={task.id}
                 key={task.id}
                 boardData={props.boardData}
                 statusData={props.statusData}
