@@ -58,10 +58,10 @@ export const CreateTasks = (props: {
         taskData.priority,
       board: props.boardData.id,
     };
-    const res = await createTask(payload, props.boardData.id);
-    props.setAllTasksCB([...props.allTasks, res]);
+    await createTask(payload, props.boardData.id);
     setButtonLoading(false);
     props.setIsModalOpenCB(false);
+    window.location.reload();
   };
 
   return (

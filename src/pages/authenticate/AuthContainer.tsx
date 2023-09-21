@@ -11,14 +11,19 @@ export const AuthContainer = (props: {
   formData: RegisterUser | LoginUser;
   remember: boolean;
 }) => {
+  const [error, setError] = React.useState<string>("");
   const handleSubmit = async () => {
     if (props.title === "Sign Up") {
       try {
         const response = await newRegistration(props.formData as RegisterUser);
-        props.remember
-          ? localStorage.setItem("token", response.token)
-          : sessionStorage.setItem("token", response.token);
-        navigate("/dashboard");
+        if (!response.token) {
+          setError(response.non_field_errors[0]);
+        } else {
+          props.remember
+            ? localStorage.setItem("token", response.token)
+            : sessionStorage.setItem("token", response.token);
+          navigate("/dashboard");
+        }
       } catch (e) {
         console.log(e);
       }
@@ -57,6 +62,7 @@ export const AuthContainer = (props: {
           >
             {props.title}
           </button>
+          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <Link
             className="text-blue-500 text-sm mt-2"
             href={props.title === "Sign Up" ? "/login" : "/signup"}

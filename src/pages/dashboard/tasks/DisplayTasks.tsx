@@ -42,7 +42,7 @@ export const DisplayTasks = (props: {
       className="flex flex-col justify-between items-center bg-white rounded-lg shadow-lg p-5 m-2 border-b-4 border-black"
       style={{ opacity: task.completed ? 0.5 : 1 }}
     >
-      <div className="flex w-80 ">
+      <div className="flex w-80 gap-1 ">
         <div className="flex flex-col justify-between items-start">
           <h1 className="text-2xl break-words text-gray-800">{task.title}</h1>
           <p className="text-sm break-words text-gray-800">
@@ -83,10 +83,7 @@ export const DisplayTasks = (props: {
                   task.priority,
                 board: props.boardData.id,
               };
-              const allTasks = props.allTasks.filter(
-                (item) => item.id !== task.id,
-              );
-              props.setAllTasksCB([...allTasks, payload]);
+              window.location.reload();
               await updateTask(task.id, payload, props.boardData.id);
             }}
           >

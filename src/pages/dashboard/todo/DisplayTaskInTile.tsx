@@ -141,7 +141,13 @@ export const DisplayTaskInTile = (props: { id: string }) => {
                   {task.description.split("|")[1].split(":")[1]}
                 </td>
                 <td className="border-b border-gray-100 px-6 py-4">
-                  {DaysRemaining(task.description.split("|")[1].split(":")[1])}
+                  {DaysRemaining(
+                    task.description.split("|")[1].split(":")[1],
+                  ) === -1
+                    ? "Overdue"
+                    : DaysRemaining(
+                        task.description.split("|")[1].split(":")[1],
+                      )}
                 </td>
               </tr>
             ))}

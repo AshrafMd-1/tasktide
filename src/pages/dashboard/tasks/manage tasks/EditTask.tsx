@@ -67,11 +67,10 @@ export const EditTasks = (props: {
         taskData.priority,
       board: props.boardData.id,
     };
-    const allTasks = props.allTasks.filter((item) => item.id !== props.taskId);
-    const res = await updateTask(props.taskId, payload, props.boardData.id);
-    props.setAllTasksCB([...allTasks, res]);
+    await updateTask(props.taskId, payload, props.boardData.id);
     setButtonLoading(false);
     props.setIsModalOpenCB(false);
+    window.location.reload();
   };
 
   return (
@@ -182,7 +181,7 @@ export const EditTasks = (props: {
               Completed
             </label>
             <input
-              value={taskData.completed.toString()}
+              checked={taskData.completed}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="checkbox"
               name="completed"
