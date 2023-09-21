@@ -15,7 +15,7 @@ import { ManageTask } from "../../../types/RequestTypes";
 import { TaskSorterBasedOnStatus } from "../../../utils/AppUtils";
 import { navigate } from "raviger";
 
-export const AllStatus = (props: { id: string }) => {
+const AllStatus = (props: { id: string }) => {
   const [boardData, setBoardData] = useState<GetBoardType>({
     title: "",
     description: "",
@@ -104,6 +104,11 @@ export const AllStatus = (props: { id: string }) => {
                     key={status.id}
                     statusData={status}
                     boardData={boardData}
+                    allStatusData={statusData}
+                    setStatusDataCB={(value: GetStatusType[]) =>
+                      setStatusData(value)
+                    }
+                    setTaskDataCB={(value: ManageTask[]) => setTaskData(value)}
                     taskData={TaskSorterBasedOnStatus(status.id, taskData)}
                   />
                 ),
@@ -122,8 +127,15 @@ export const AllStatus = (props: { id: string }) => {
         </div>
       </div>
       <Modal open={isModalOpen} closeCB={() => setIsModalOpen(false)}>
-        <CreateStatus setIsModalOpenCB={setIsModalOpen} id={props.id} />
+        <CreateStatus
+          setIsModalOpenCB={setIsModalOpen}
+          id={props.id}
+          setStatusDataCB={(value: GetStatusType[]) => setStatusData(value)}
+          statusData={statusData}
+        />
       </Modal>
     </DashboardContainer>
   );
 };
+
+export default AllStatus;

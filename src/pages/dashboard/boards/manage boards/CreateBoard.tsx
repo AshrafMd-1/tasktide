@@ -1,24 +1,27 @@
 import { useState } from "react";
 import { ManageBoard } from "../../../../types/RequestTypes";
 import { createBoard } from "../../../../utils/FetchRequests";
+import { GetBoardType } from "../../../../types/DataTypes";
 
 export const CreateBoard = (props: {
+  boardData: GetBoardType[];
   setIsModalOpenCB: (value: boolean) => void;
+  setBoardDataCB: (value: GetBoardType[]) => void;
 }) => {
-  const [boardData, setBoardData] = useState<ManageBoard>({
+  const [newBoardDetails, setNewBoardDetails] = useState<ManageBoard>({
     title: "",
     description: "",
   });
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const submitBoard = async () => {
-    if (boardData.title === "" || boardData.description === "") return;
+    if (newBoardDetails.title === "" || newBoardDetails.description === "")
+      return;
+    setButtonLoading(true);
 
-    await createBoard(boardData);
-    window.location.reload();
-    setBoardData({
-      title: "",
-      description: "",
-    });
+    const res = await createBoard(newBoardDetails);
+    props.setBoardDataCB([...props.boardData, res]);
+    setButtonLoading(false);
     props.setIsModalOpenCB(false);
   };
 
@@ -38,17 +41,20 @@ export const CreateBoard = (props: {
               Title
             </label>
             <input
-              value={boardData.title}
+              value={newBoardDetails.title}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="title"
               id="title"
               onChange={(e) =>
-                setBoardData({ ...boardData, title: e.target.value })
+                setNewBoardDetails({
+                  ...newBoardDetails,
+                  title: e.target.value,
+                })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {boardData.title === "" ? "Title is required" : ""}
+              {newBoardDetails.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -59,17 +65,22 @@ export const CreateBoard = (props: {
               Description
             </label>
             <input
-              value={boardData.description}
+              value={newBoardDetails.description}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="description"
               id="description"
               onChange={(e) =>
-                setBoardData({ ...boardData, description: e.target.value })
+                setNewBoardDetails({
+                  ...newBoardDetails,
+                  description: e.target.value,
+                })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {boardData.description === "" ? "Description is required" : ""}
+              {newBoardDetails.description === ""
+                ? "Description is required"
+                : ""}
             </label>
           </div>
         </div>
@@ -81,7 +92,7 @@ export const CreateBoard = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Create
+            {buttonLoading ? "Loading..." : "Create Board"}
           </button>
         </div>
       </form>

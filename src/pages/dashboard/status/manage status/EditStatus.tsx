@@ -1,72 +1,45 @@
 import { useEffect, useState } from "react";
 import { ManageStatus } from "../../../../types/RequestTypes";
-import { getStatusDetail, updateStatus } from "../../../../utils/FetchRequests";
-import { ErrorPage } from "../../../../components/ErrorPage";
-import { LoadingScreen } from "../../../../components/LoadingScreen";
+import { updateStatus } from "../../../../utils/FetchRequests";
+import { GetStatusType } from "../../../../types/DataTypes";
 
 export const EditStatus = (props: {
   setIsStatusModalOpenCB: (value: boolean) => void;
   statusId: number;
+  statusData: GetStatusType[];
+  setStatusDataCB: (value: GetStatusType[]) => void;
 }) => {
-  const [statusData, setStatusData] = useState<ManageStatus>({
+  const [updateStatusData, setUpdateStatusData] = useState<ManageStatus>({
     title: "",
     description: "",
   });
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [boardId, setBoardId] = useState<number>(0);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchStatusDetails = async () => {
-      return await getStatusDetail(props.statusId);
-    };
-    fetchStatusDetails()
-      .then((res) => {
-        if (res.title.length === 0) {
-          setNotFound(true);
-          return;
-        }
-        setStatusData({
-          ...statusData,
-          title: res.title,
-          description: res.description.split("|")[0],
-        });
-        setBoardId(res.description.split("|BOARD|")[1]);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setNotFound(true);
-        console.log(err);
-      });
-  }, [props.statusId, statusData]);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (notFound) {
-    return (
-      <ErrorPage
-        status="204"
-        message="No Content Found"
-        description="The requested content could not be found."
-      />
+    const currentStatus = props.statusData.find(
+      (status) => status.id === props.statusId,
     );
-  }
+    setUpdateStatusData({
+      title: currentStatus?.title || "",
+      description: currentStatus?.description.split("|BOARD|")[0] || "",
+    });
+    setBoardId(Number(currentStatus?.description.split("|BOARD|")[1]));
+  }, [props.statusId, props.statusData]);
 
   const submitStatus = async () => {
-    if (statusData.title === "" || statusData.description === "") return;
-
+    if (updateStatusData.title === "" || updateStatusData.description === "")
+      return;
+    setButtonLoading(true);
     const payload = {
-      title: statusData.title,
-      description: statusData.description + "|BOARD|" + boardId,
+      title: updateStatusData.title,
+      description: updateStatusData.description + "|BOARD|" + boardId,
     };
-    await updateStatus(props.statusId, payload);
-    window.location.reload();
-    setStatusData({
-      title: "",
-      description: "",
-    });
+    const newStatusData =
+      props.statusData.filter((item) => item.id !== props.statusId) || [];
+    const res = await updateStatus(props.statusId, payload);
+    props.setStatusDataCB([...newStatusData, res]);
+    setButtonLoading(false);
     props.setIsStatusModalOpenCB(false);
   };
 
@@ -86,17 +59,20 @@ export const EditStatus = (props: {
               Title
             </label>
             <input
-              value={statusData.title}
+              value={updateStatusData.title}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="title"
               id="title"
               onChange={(e) =>
-                setStatusData({ ...statusData, title: e.target.value })
+                setUpdateStatusData({
+                  ...updateStatusData,
+                  title: e.target.value,
+                })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {statusData.title === "" ? "Title is required" : ""}
+              {updateStatusData.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -107,17 +83,22 @@ export const EditStatus = (props: {
               Description
             </label>
             <input
-              value={statusData.description}
+              value={updateStatusData.description}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="description"
               id="description"
               onChange={(e) =>
-                setStatusData({ ...statusData, description: e.target.value })
+                setUpdateStatusData({
+                  ...updateStatusData,
+                  description: e.target.value,
+                })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {statusData.description === "" ? "Description is required" : ""}
+              {updateStatusData.description === ""
+                ? "Description is required"
+                : ""}
             </label>
           </div>
         </div>
@@ -129,7 +110,7 @@ export const EditStatus = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Update
+            {buttonLoading ? "Loading..." : "Update"}
           </button>
         </div>
       </form>

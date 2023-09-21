@@ -19,6 +19,8 @@ export const DisplayTasks = (props: {
   taskData: GetTaskType;
   boardData: GetBoardType;
   statusData: GetStatusType;
+  allTasks: ManageTask[];
+  setAllTasksCB: (value: ManageTask[]) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   return (
@@ -69,8 +71,11 @@ export const DisplayTasks = (props: {
                   props.taskData.priority,
                 board: props.boardData.id,
               };
+              const allTasks = props.allTasks.filter(
+                (item) => item.id !== props.taskData.id,
+              );
+              props.setAllTasksCB([...allTasks, payload]);
               await updateTask(props.taskData.id, payload, props.boardData.id);
-              window.location.reload();
             }}
           >
             {props.taskData.completed ? (
@@ -123,13 +128,15 @@ export const DisplayTasks = (props: {
               ) {
                 return;
               }
-              await deleteTask(props.taskData.id, props.boardData.id)
-                .then(() => {
-                  window.location.reload();
-                })
-                .catch((err) => {
+              const allTasks = props.allTasks.filter(
+                (item) => item.id !== props.taskData.id,
+              );
+              props.setAllTasksCB(allTasks);
+              await deleteTask(props.taskData.id, props.boardData.id).catch(
+                (err) => {
                   console.log(err);
-                });
+                },
+              );
             }}
           >
             <svg
@@ -217,6 +224,8 @@ export const DisplayTasks = (props: {
             boardData={props.boardData}
             setIsModalOpenCB={setIsModalOpen}
             taskId={props.taskData.id}
+            allTasks={props.allTasks}
+            setAllTasksCB={(value: ManageTask[]) => props.setAllTasksCB(value)}
           />
         </Modal>
       )}

@@ -18,7 +18,7 @@ import {
 import { ManageTask } from "../../../types/RequestTypes";
 import { TaskDisplayOverview } from "./TaskDisplayOverview";
 
-export const Home = () => {
+const Home = () => {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [boardData, setBoardData] = useState<GetBoardType[]>([]);
@@ -266,3 +266,5 @@ export const Home = () => {
     </DashboardContainer>
   );
 };
+
+export default Home;

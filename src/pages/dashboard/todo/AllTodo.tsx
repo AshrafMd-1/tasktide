@@ -6,7 +6,7 @@ import { LoadingScreen } from "../../../components/LoadingScreen";
 import { navigate } from "raviger";
 import { DisplayTaskInTile } from "./DisplayTaskInTile";
 
-export const AllTodo = () => {
+const AllTodo = () => {
   const [boardData, setBoardData] = useState<GetBoardType[]>([]);
   const [boardId, setBoardId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -96,3 +96,5 @@ export const AllTodo = () => {
     </DashboardContainer>
   );
 };
+
+export default AllTodo;

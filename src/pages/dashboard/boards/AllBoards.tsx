@@ -4,9 +4,12 @@ import Modal from "../../../components/Modal";
 import { CreateBoard } from "./manage boards/CreateBoard";
 import { BoardDisplay } from "./BoardDisplay";
 import { navigate } from "raviger";
+import { GetBoardType } from "../../../types/DataTypes";
 
-export const AllBoards = () => {
+const AllBoards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [boardData, setBoardData] = useState<GetBoardType[]>([]);
+  const [boardId, setBoardId] = useState<number | undefined>(undefined);
   const [currentUser] = useState(() => {
     const user =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -29,13 +32,22 @@ export const AllBoards = () => {
             Create Board
           </button>
         </div>
-        <BoardDisplay />
+        <BoardDisplay
+          boardId={boardId}
+          BoardData={boardData}
+          setBoardIdCB={(value: number | undefined) => setBoardId(value)}
+          setBoardDataCB={(value: GetBoardType[]) => setBoardData(value)}
+        />
       </div>
       <Modal open={isModalOpen} closeCB={() => setIsModalOpen(false)}>
         <CreateBoard
+          boardData={boardData}
           setIsModalOpenCB={(value: boolean) => setIsModalOpen(value)}
+          setBoardDataCB={(value: GetBoardType[]) => setBoardData(value)}
         />
       </Modal>
     </DashboardContainer>
   );
 };
+
+export default AllBoards;

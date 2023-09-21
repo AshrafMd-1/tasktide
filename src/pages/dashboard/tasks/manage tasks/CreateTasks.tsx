@@ -13,6 +13,8 @@ export const CreateTasks = (props: {
   setIsModalOpenCB: (value: boolean) => void;
   statusData: GetStatusType;
   boardData: GetBoardType;
+  allTasks: ManageTask[];
+  setAllTasksCB: (value: ManageTask[]) => void;
 }) => {
   const [taskData, setTaskData] = useState<GetTaskType>({
     title: "",
@@ -21,6 +23,7 @@ export const CreateTasks = (props: {
     due_date: "",
     completed: false,
   });
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   const submitTask = async () => {
     if (
@@ -33,6 +36,7 @@ export const CreateTasks = (props: {
     ) {
       return;
     }
+    setButtonLoading(true);
     const payload: ManageTask = {
       board_object: {
         title: props.boardData.title,
@@ -54,15 +58,9 @@ export const CreateTasks = (props: {
         taskData.priority,
       board: props.boardData.id,
     };
-    await createTask(payload, props.boardData.id);
-    window.location.reload();
-    setTaskData({
-      title: "",
-      description: "",
-      priority: "Low",
-      due_date: "",
-      completed: false,
-    });
+    const res = await createTask(payload, props.boardData.id);
+    props.setAllTasksCB([...props.allTasks, res]);
+    setButtonLoading(false);
     props.setIsModalOpenCB(false);
   };
 
@@ -190,7 +188,7 @@ export const CreateTasks = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Add
+            {buttonLoading ? "Loading..." : "Add Task"}
           </button>
         </div>
       </form>

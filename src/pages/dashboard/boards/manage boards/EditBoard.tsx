@@ -1,63 +1,46 @@
 import { useEffect, useState } from "react";
 import { ManageBoard } from "../../../../types/RequestTypes";
-import { LoadingScreen } from "../../../../components/LoadingScreen";
-import { ErrorPage } from "../../../../components/ErrorPage";
-import { getBoardDetail, updateBoard } from "../../../../utils/FetchRequests";
+import { updateBoard } from "../../../../utils/FetchRequests";
+import { GetBoardType } from "../../../../types/DataTypes";
 
 export const EditBoard = (props: {
+  boardData: GetBoardType[];
   setIsModalOpenCB: (value: boolean) => void;
   boardId: number;
+  setBoardDataCB: (value: GetBoardType[]) => void;
 }) => {
-  const [boardData, setBoardData] = useState<ManageBoard>({
+  const [updateBoardDetails, setUpdateBoardDetails] = useState<ManageBoard>({
     title: "",
     description: "",
   });
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   useEffect(() => {
-    const fetchBoardDetails = async () => {
-      return await getBoardDetail(props.boardId);
-    };
-    fetchBoardDetails()
-      .then((res) => {
-        if (res.title.length === 0) {
-          setNotFound(true);
-          return;
-        }
-        setBoardData(res);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setNotFound(true);
-        console.log(err);
-      });
-  }, [props.boardId]);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (notFound) {
-    return (
-      <ErrorPage
-        status="204"
-        message="No Content Found"
-        description="The requested content could not be found."
-      />
+    const currentBoard = props.boardData.find(
+      (board) => board.id === props.boardId,
     );
-  }
+    if (currentBoard) {
+      setUpdateBoardDetails({
+        title: currentBoard.title,
+        description: currentBoard.description,
+      });
+    }
+  }, [props.boardData, props.boardId]);
 
   const submitBoard = async () => {
-    if (boardData.title === "" || boardData.description === "") {
+    if (
+      updateBoardDetails.title === "" ||
+      updateBoardDetails.description === ""
+    ) {
       return;
     }
-    await updateBoard(props.boardId, boardData);
-    window.location.reload();
-    setBoardData({
-      title: "",
-      description: "",
-    });
+    setButtonLoading(true);
+    const res = await updateBoard(props.boardId, updateBoardDetails);
+    const newBoardData = props.boardData.filter(
+      (board) => board.id !== props.boardId,
+    );
+    props.setBoardDataCB([...newBoardData, res]);
+    setButtonLoading(false);
     props.setIsModalOpenCB(false);
   };
 
@@ -77,17 +60,20 @@ export const EditBoard = (props: {
               Title
             </label>
             <input
-              value={boardData.title}
+              value={updateBoardDetails.title}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="title"
               id="title"
               onChange={(e) =>
-                setBoardData({ ...boardData, title: e.target.value })
+                setUpdateBoardDetails({
+                  ...updateBoardDetails,
+                  title: e.target.value,
+                })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {boardData.title === "" ? "Title is required" : ""}
+              {updateBoardDetails.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -98,17 +84,22 @@ export const EditBoard = (props: {
               Description
             </label>
             <input
-              value={boardData.description}
+              value={updateBoardDetails.description}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="description"
               id="description"
               onChange={(e) =>
-                setBoardData({ ...boardData, description: e.target.value })
+                setUpdateBoardDetails({
+                  ...updateBoardDetails,
+                  description: e.target.value,
+                })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {boardData.description === "" ? "Description is required" : ""}
+              {updateBoardDetails.description === ""
+                ? "Description is required"
+                : ""}
             </label>
           </div>
         </div>
@@ -120,7 +111,7 @@ export const EditBoard = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Update
+            {buttonLoading ? "Loading..." : "Update"}
           </button>
         </div>
       </form>

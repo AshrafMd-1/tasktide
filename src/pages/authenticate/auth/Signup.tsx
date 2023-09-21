@@ -25,7 +25,7 @@ const initialState: RegisterUser = {
   password1: "",
   password2: "",
 };
-export const Signup = () => {
+const Signup = () => {
   const [formDate, dispatch] = useReducer(reducer, initialState);
   const [remember, setRemember] = useState<boolean>(false);
   const [currentUser] = useState(() => {
@@ -144,3 +144,5 @@ export const Signup = () => {
     </AuthContainer>
   );
 };
+
+export default Signup;

@@ -7,11 +7,14 @@ import { ErrorPage } from "../../../components/ErrorPage";
 import { Link } from "raviger";
 import { deleteBoard, getBoards } from "../../../utils/FetchRequests";
 
-export const BoardDisplay = () => {
-  const [boardDetails, setBoardDetails] = useState<GetBoardType[]>([]);
+export const BoardDisplay = (props: {
+  boardId: number | undefined;
+  BoardData: GetBoardType[];
+  setBoardIdCB: (value: number | undefined) => void;
+  setBoardDataCB: (value: GetBoardType[]) => void;
+}) => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [boardId, setBoardId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const fetchBoardDetails = async () => {
@@ -23,7 +26,7 @@ export const BoardDisplay = () => {
           setLoading(false);
           return;
         } else {
-          setBoardDetails(res.results);
+          props.setBoardDataCB(res.results);
           setLoading(false);
         }
       })
@@ -37,7 +40,7 @@ export const BoardDisplay = () => {
     return <LoadingScreen />;
   }
 
-  if (boardDetails.length === 0) {
+  if (props.BoardData.length === 0) {
     return (
       <h1 className="text-2xl font-bold text-gray-800 text-center mt-4">
         No boards found, Please create a board.
@@ -47,7 +50,7 @@ export const BoardDisplay = () => {
 
   return (
     <div className="flex flex-wrap justify-center items-center gap-4 mt-4">
-      {boardDetails.map((board) => {
+      {props.BoardData.map((board) => {
         return (
           <div
             className="bg-white shadow-lg rounded-lg px-4 py-6 w-80 m-2"
@@ -80,7 +83,7 @@ export const BoardDisplay = () => {
                   className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold px-2 py-1 rounded-md"
                   onClick={() => {
                     setIsModalOpen(true);
-                    setBoardId(board.id);
+                    props.setBoardIdCB(board.id);
                   }}
                 >
                   <svg
@@ -104,13 +107,13 @@ export const BoardDisplay = () => {
                     ) {
                       return;
                     }
-                    await deleteBoard(board.id)
-                      .then(() => {
-                        window.location.reload();
-                      })
-                      .catch((err) => {
-                        console.log(err);
-                      });
+                    const newBoardData = props.BoardData.filter(
+                      (item) => item.id !== board.id,
+                    );
+                    props.setBoardDataCB(newBoardData);
+                    await deleteBoard(board.id).catch((err) => {
+                      console.log(err);
+                    });
                   }}
                 >
                   <svg
@@ -154,8 +157,15 @@ export const BoardDisplay = () => {
           setIsModalOpen(false);
         }}
       >
-        {boardId ? (
-          <EditBoard boardId={boardId} setIsModalOpenCB={setIsModalOpen} />
+        {props.boardId !== undefined ? (
+          <EditBoard
+            boardId={props.boardId}
+            boardData={props.BoardData}
+            setBoardDataCB={(value: GetBoardType[]) =>
+              props.setBoardDataCB(value)
+            }
+            setIsModalOpenCB={setIsModalOpen}
+          />
         ) : (
           <ErrorPage
             status="400"

@@ -4,11 +4,9 @@ import {
   GetTaskType,
 } from "../../../../types/DataTypes";
 import { useEffect, useState } from "react";
-import { getTaskDetail, updateTask } from "../../../../utils/FetchRequests";
-import { LoadingScreen } from "../../../../components/LoadingScreen";
-import { ErrorPage } from "../../../../components/ErrorPage";
+import { updateTask } from "../../../../utils/FetchRequests";
 import { ManageTask } from "../../../../types/RequestTypes";
-import { GetPriorityColor } from "../../../../utils/AppUtils";
+import { GetPriorityColor, TaskConverter } from "../../../../utils/AppUtils";
 import { PriorityOptions } from "../../../../components/Utils";
 
 export const EditTasks = (props: {
@@ -16,6 +14,8 @@ export const EditTasks = (props: {
   statusData: GetStatusType;
   boardData: GetBoardType;
   taskId: number;
+  allTasks: ManageTask[];
+  setAllTasksCB: (value: ManageTask[]) => void;
 }) => {
   const [taskData, setTaskData] = useState<GetTaskType>({
     title: "",
@@ -24,53 +24,14 @@ export const EditTasks = (props: {
     due_date: "",
     completed: false,
   });
-  const [notFound, setNotFound] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchTaskDetail = async () => {
-      return (
-        props.boardData.id !== undefined &&
-        props.statusData.id !== undefined &&
-        props.taskId !== undefined &&
-        (await getTaskDetail(props.taskId, props.boardData.id))
-      );
-    };
-    fetchTaskDetail()
-      .then((res) => {
-        if (res.title.length === 0) {
-          setNotFound(true);
-          return;
-        }
-        setTaskData({
-          ...taskData,
-          title: res.title,
-          description: res.description.split("|")[0],
-          priority: res.description.split("|")[3].split(":")[1],
-          due_date: res.description.split("|")[1].split(":")[1],
-          completed: res.description.split("|")[2].split(":")[1] === "true",
-        });
-        setLoading(false);
-      })
-      .catch((err) => {
-        setNotFound(true);
-        console.log(err);
-      });
-  }, [props.taskId, props.boardData.id, props.statusData.id, taskData]);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
-  if (notFound) {
-    return (
-      <ErrorPage
-        status="204"
-        message="No Content Found"
-        description="The requested content could not be found."
-      />
-    );
-  }
+    const currentTask = props.allTasks.find((item) => item.id === props.taskId);
+    if (currentTask !== undefined) {
+      setTaskData(TaskConverter(currentTask));
+    }
+  }, [props.allTasks, props.taskId]);
 
   const submitTask = async () => {
     if (
@@ -84,6 +45,7 @@ export const EditTasks = (props: {
     ) {
       return;
     }
+    setButtonLoading(true);
     const payload: ManageTask = {
       board_object: {
         title: props.boardData.title,
@@ -105,15 +67,10 @@ export const EditTasks = (props: {
         taskData.priority,
       board: props.boardData.id,
     };
-    await updateTask(props.taskId, payload, props.boardData.id);
-    window.location.reload();
-    setTaskData({
-      title: "",
-      description: "",
-      priority: "",
-      due_date: "",
-      completed: false,
-    });
+    const allTasks = props.allTasks.filter((item) => item.id !== props.taskId);
+    const res = await updateTask(props.taskId, payload, props.boardData.id);
+    props.setAllTasksCB([...allTasks, res]);
+    setButtonLoading(false);
     props.setIsModalOpenCB(false);
   };
 
@@ -244,7 +201,7 @@ export const EditTasks = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Update
+            {buttonLoading ? "Loading..." : "Update Task"}
           </button>
         </div>
       </form>

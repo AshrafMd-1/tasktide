@@ -1,12 +1,15 @@
 import { useRoutes } from "raviger";
-import { HomePage } from "./pages/homepage/HomePage";
-import { Login } from "./pages/authenticate/auth/Login";
-import { Signup } from "./pages/authenticate/auth/Signup";
-import { Home } from "./pages/dashboard/home/Home";
+import { lazy, Suspense } from "react";
 import { ErrorPage } from "./components/ErrorPage";
-import { AllBoards } from "./pages/dashboard/boards/AllBoards";
-import { AllStatus } from "./pages/dashboard/status/AllStatus";
-import { AllTodo } from "./pages/dashboard/todo/AllTodo";
+import { LoadingScreen } from "./components/LoadingScreen";
+
+const HomePage = lazy(() => import("./pages/homepage/HomePage"));
+const Login = lazy(() => import("./pages/authenticate/auth/Login"));
+const Signup = lazy(() => import("./pages/authenticate/auth/Signup"));
+const Home = lazy(() => import("./pages/dashboard/home/Home"));
+const AllBoards = lazy(() => import("./pages/dashboard/boards/AllBoards"));
+const AllStatus = lazy(() => import("./pages/dashboard/status/AllStatus"));
+const AllTodo = lazy(() => import("./pages/dashboard/todo/AllTodo"));
 
 const routes = {
   "/": () => <HomePage />,
@@ -28,7 +31,7 @@ const routes = {
 };
 
 const App = () => {
-  return useRoutes(routes);
+  return <Suspense fallback={<LoadingScreen />}>{useRoutes(routes)}</Suspense>;
 };
 
 export default App;

@@ -1,28 +1,29 @@
 import { useState } from "react";
 import { ManageStatus } from "../../../../types/RequestTypes";
 import { createStatus } from "../../../../utils/FetchRequests";
+import { GetStatusType } from "../../../../types/DataTypes";
 
 export const CreateStatus = (props: {
   setIsModalOpenCB: (value: boolean) => void;
   id: string;
+  statusData: GetStatusType[];
+  setStatusDataCB: (value: GetStatusType[]) => void;
 }) => {
-  const [statusData, setStatusData] = useState<ManageStatus>({
+  const [newStatusData, setNewStatusData] = useState<ManageStatus>({
     title: "",
     description: "",
   });
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   const submitStatus = async () => {
-    if (statusData.title === "" || statusData.description === "") return;
-
-    await createStatus({
-      ...statusData,
-      description: statusData.description + "|BOARD|" + props.id,
+    if (newStatusData.title === "" || newStatusData.description === "") return;
+    setButtonLoading(true);
+    const res = await createStatus({
+      ...newStatusData,
+      description: newStatusData.description + "|BOARD|" + props.id,
     });
-    window.location.reload();
-    setStatusData({
-      title: "",
-      description: "",
-    });
+    props.setStatusDataCB([...props.statusData, res]);
+    setButtonLoading(false);
     props.setIsModalOpenCB(false);
   };
 
@@ -42,17 +43,17 @@ export const CreateStatus = (props: {
               Title
             </label>
             <input
-              value={statusData.title}
+              value={newStatusData.title}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="title"
               id="title"
               onChange={(e) =>
-                setStatusData({ ...statusData, title: e.target.value })
+                setNewStatusData({ ...newStatusData, title: e.target.value })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {statusData.title === "" ? "Title is required" : ""}
+              {newStatusData.title === "" ? "Title is required" : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -63,17 +64,22 @@ export const CreateStatus = (props: {
               Description
             </label>
             <input
-              value={statusData.description}
+              value={newStatusData.description}
               className="border-2 border-gray-500 rounded-lg px-2 text-xl  text-gray-800"
               type="text"
               name="description"
               id="description"
               onChange={(e) =>
-                setStatusData({ ...statusData, description: e.target.value })
+                setNewStatusData({
+                  ...newStatusData,
+                  description: e.target.value,
+                })
               }
             />
             <label className="text-xl text-center text-red-500">
-              {statusData.description === "" ? "Description is required" : ""}
+              {newStatusData.description === ""
+                ? "Description is required"
+                : ""}
             </label>
           </div>
         </div>
@@ -85,7 +91,7 @@ export const CreateStatus = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            Create
+            {buttonLoading ? "Creating..." : "Create"}
           </button>
         </div>
       </form>

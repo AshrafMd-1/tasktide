@@ -14,8 +14,11 @@ import { EditStatus } from "./manage status/EditStatus";
 
 export const StatusDisplay = (props: {
   statusData: GetStatusType;
+  allStatusData: GetStatusType[];
   boardData: GetBoardType;
+  setStatusDataCB: (value: GetStatusType[]) => void;
   taskData: ManageTask[];
+  setTaskDataCB: (value: ManageTask[]) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
@@ -52,13 +55,13 @@ export const StatusDisplay = (props: {
               ) {
                 return;
               }
-              await deleteStatus(props.statusData.id)
-                .then(() => {
-                  window.location.reload();
-                })
-                .catch((err) => {
-                  console.log(err);
-                });
+              const newStatusData = props.allStatusData.filter(
+                (item) => item.id !== props.statusData.id,
+              );
+              props.setStatusDataCB(newStatusData);
+              await deleteStatus(props.statusData.id).catch((err) => {
+                console.log(err);
+              });
             }}
           >
             <svg
@@ -90,6 +93,10 @@ export const StatusDisplay = (props: {
                 key={task.id}
                 boardData={props.boardData}
                 statusData={props.statusData}
+                allTasks={props.taskData}
+                setAllTasksCB={(value: ManageTask[]) =>
+                  props.setTaskDataCB(value)
+                }
               />
             ),
         )}
@@ -112,6 +119,8 @@ export const StatusDisplay = (props: {
           setIsModalOpenCB={setIsModalOpen}
           statusData={props.statusData}
           boardData={props.boardData}
+          setAllTasksCB={(value: ManageTask[]) => props.setTaskDataCB(value)}
+          allTasks={props.taskData}
         />
       </Modal>
       <Modal
@@ -124,6 +133,10 @@ export const StatusDisplay = (props: {
           <EditStatus
             statusId={props.statusData.id}
             setIsStatusModalOpenCB={setIsStatusModalOpen}
+            statusData={props.allStatusData}
+            setStatusDataCB={(value: GetStatusType[]) =>
+              props.setStatusDataCB(value)
+            }
           />
         ) : (
           <ErrorPage

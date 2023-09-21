@@ -20,7 +20,7 @@ const initialState: LoginUser = {
   password: "",
 };
 
-export const Login = () => {
+const Login = () => {
   const [formDate, dispatch] = useReducer(reducer, initialState);
   const [remember, setRemember] = useState<boolean>(false);
   const [currentUser] = useState(() => {
@@ -99,3 +99,5 @@ export const Login = () => {
     </AuthContainer>
   );
 };
+
+export default Login;

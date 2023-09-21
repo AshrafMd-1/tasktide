@@ -4,7 +4,7 @@ import backgroundImg from "./assets/images/background.jpg";
 import { useState } from "react";
 import { navigate } from "raviger";
 
-export const HomePage = () => {
+const HomePage = () => {
   const [currentUser] = useState(() => {
     const user =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -30,3 +30,5 @@ export const HomePage = () => {
     </div>
   );
 };
+
+export default HomePage;
