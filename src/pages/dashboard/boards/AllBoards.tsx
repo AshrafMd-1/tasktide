@@ -42,7 +42,10 @@ const AllBoards = () => {
       });
   }, []);
 
-  if (!currentUser) navigate("/login");
+  if (!currentUser) {
+    navigate("/login");
+    return null;
+  }
 
   if (loading) {
     return (

@@ -37,7 +37,10 @@ const Signup = () => {
     return null;
   });
 
-  if (currentUser) navigate("/dashboard");
+  if (currentUser) {
+    navigate("/dashboard");
+    return null;
+  }
 
   return (
     <AuthContainer
