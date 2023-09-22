@@ -20,7 +20,7 @@ export const CreateTasks = (props: {
     title: "",
     description: "",
     priority: "Low",
-    due_date: "",
+    due_date: new Date().toISOString().slice(0, 10),
     completed: false,
   });
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
@@ -58,10 +58,10 @@ export const CreateTasks = (props: {
         taskData.priority,
       board: props.boardData.id,
     };
-    await createTask(payload, props.boardData.id);
+    const res=await createTask(payload, props.boardData.id);
+    props.setAllTasksCB([...props.allTasks, res]);
     setButtonLoading(false);
     props.setIsModalOpenCB(false);
-    window.location.reload();
   };
 
   return (

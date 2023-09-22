@@ -222,12 +222,17 @@ const Home = () => {
             </p>
           </div>
           <div className="flex justify-between items-center shadow-lg rounded-lg p-5">
-            <h1 className="text-2xl text-gray-800">Later</h1>
+            <h1 className="text-2xl text-gray-800">Tomorrow</h1>
             <p className="text-gray-500 text-xl font-bold">
               {
                 taskData.filter(
                   (task) =>
-                    new Date(task.due_date) > new Date() && !task.completed,
+                    new Date(
+                      new Date(task.due_date).getTime() + 24 * 60 * 60 * 1000,
+                    )
+                      .toString()
+                      .slice(0, 15) === new Date().toString().slice(0, 15) &&
+                    !task.completed,
                 ).length
               }
             </p>
@@ -258,8 +263,8 @@ const Home = () => {
           <TaskDisplayOverview
             taskData={taskData}
             condition={1}
-            title={"Tasks Due Later"}
-            notFoundMessage={"No tasks due Later"}
+            title={"Tasks Due Tomorrow"}
+            notFoundMessage={"No tasks due tomorrow"}
           />
         </div>
       </div>

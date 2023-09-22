@@ -11,7 +11,7 @@ import {
   TaskConverter,
 } from "../../../utils/AppUtils";
 import { deleteTask, updateTask } from "../../../utils/FetchRequests";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../../components/Modal";
 import { EditTasks } from "./manage tasks/EditTask";
 import { ManageTask } from "../../../types/RequestTypes";
@@ -24,7 +24,7 @@ export const DisplayTasks = (props: {
   setAllTasksCB: (value: ManageTask[]) => void;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [task] = useState<GetTaskType>(() => {
+  const [task, setTask] = useState<GetTaskType>(() => {
     const currentTask = props.allTasks.find((item) => item.id === props.taskId);
     if (currentTask !== undefined) {
       return TaskConverter(currentTask);
@@ -37,6 +37,7 @@ export const DisplayTasks = (props: {
       completed: false,
     };
   });
+
   return (
     <div
       className="flex flex-col justify-between items-center bg-white rounded-lg shadow-lg p-5 m-2 border-b-4 border-black"
@@ -83,7 +84,8 @@ export const DisplayTasks = (props: {
                   task.priority,
                 board: props.boardData.id,
               };
-              window.location.reload();
+
+              setTask({ ...task, completed: !task.completed });
               await updateTask(task.id, payload, props.boardData.id);
             }}
           >
@@ -174,7 +176,9 @@ export const DisplayTasks = (props: {
               style={{ borderColor: GetDateColor(task.due_date) }}
             >
               {GetCompleteDaysRemainingComponent(task.due_date)}{" "}
-              {DaysRemaining(task.due_date)} days
+              {DaysRemaining(task.due_date) === -1
+                ? "Overdue"
+                : DaysRemaining(task.due_date) + " days"}
             </p>
           )}
         </div>
@@ -232,7 +236,7 @@ export const DisplayTasks = (props: {
             setIsModalOpenCB={setIsModalOpen}
             taskId={task.id}
             allTasks={props.allTasks}
-            setAllTasksCB={(value: ManageTask[]) => props.setAllTasksCB(value)}
+            setTasksCB={(value: GetTaskType) => setTask(value)}
           />
         </Modal>
       )}

@@ -16,10 +16,10 @@ export const StatusDisplay = (props: {
   setStatusDataCB: (value: GetStatusType[]) => void;
   taskData: ManageTask[];
   setTaskDataCB: (value: ManageTask[]) => void;
+  allTaskData: ManageTask[];
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState<boolean>(false);
-
   return (
     <div className="bg-white flex flex-col  shadow-lg rounded-lg px-4 py-6 w-100 m-2">
       <div className="flex justify-between mb-3 gap-3  items-center">
@@ -91,7 +91,7 @@ export const StatusDisplay = (props: {
                 key={task.id}
                 boardData={props.boardData}
                 statusData={props.statusData}
-                allTasks={props.taskData}
+                allTasks={props.allTaskData}
                 setAllTasksCB={(value: ManageTask[]) =>
                   props.setTaskDataCB(value)
                 }
@@ -118,7 +118,7 @@ export const StatusDisplay = (props: {
           statusData={props.statusData}
           boardData={props.boardData}
           setAllTasksCB={(value: ManageTask[]) => props.setTaskDataCB(value)}
-          allTasks={props.taskData}
+          allTasks={props.allTaskData}
         />
       </Modal>
       <Modal

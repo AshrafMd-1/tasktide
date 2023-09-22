@@ -20,7 +20,12 @@ export const TaskDisplayOverview = (props: {
     } else if (condition === 0) {
       return new Date(task.due_date) === new Date() && !task.completed;
     } else {
-      return new Date(task.due_date) > new Date() && !task.completed;
+      return (
+        new Date(new Date(task.due_date).getTime() + 24 * 60 * 60 * 1000)
+          .toString()
+          .slice(0, 15) === new Date().toString().slice(0, 15) &&
+        !task.completed
+      );
     }
   };
   return (

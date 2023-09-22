@@ -84,7 +84,11 @@ const AllStatus = (props: { id: string }) => {
     <DashboardContainer>
       <div>
         <div className="flex justify-between items-center mb-5">
-          <h1 className="text-4xl text-gray-800">{boardData.title}</h1>
+          <div>
+            <h1 className="text-4xl text-gray-800">{boardData.title}</h1>
+            <h1 className="text-2xl italic ml-2 text-gray-800">{boardData.description}</h1>
+          </div>
+
           <button
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md mr-6"
             onClick={() => setIsModalOpen(true)}
@@ -110,6 +114,7 @@ const AllStatus = (props: { id: string }) => {
                     }
                     setTaskDataCB={(value: ManageTask[]) => setTaskData(value)}
                     taskData={TaskSorterBasedOnStatus(status.id, taskData)}
+                    allTaskData={taskData}
                   />
                 ),
             )}

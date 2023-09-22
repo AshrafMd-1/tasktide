@@ -3,7 +3,7 @@ import {
   GetStatusType,
   GetTaskType,
 } from "../../../../types/DataTypes";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { updateTask } from "../../../../utils/FetchRequests";
 import { ManageTask } from "../../../../types/RequestTypes";
 import { GetPriorityColor, TaskConverter } from "../../../../utils/AppUtils";
@@ -15,23 +15,21 @@ export const EditTasks = (props: {
   boardData: GetBoardType;
   taskId: number;
   allTasks: ManageTask[];
-  setAllTasksCB: (value: ManageTask[]) => void;
+  setTasksCB: (value: GetTaskType) => void;
 }) => {
-  const [taskData, setTaskData] = useState<GetTaskType>({
-    title: "",
-    description: "",
-    priority: "",
-    due_date: "",
-    completed: false,
-  });
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const currentTask = props.allTasks.find((item) => item.id === props.taskId);
-    if (currentTask !== undefined) {
-      setTaskData(TaskConverter(currentTask));
+  const [taskData, setTaskData] = useState<GetTaskType>(() => {
+    const task = props.allTasks.find((task) => task.id === props.taskId);
+    if (task) {
+      return TaskConverter(task);
     }
-  }, [props.allTasks, props.taskId]);
+    return {
+      title: "",
+      description: "",
+      priority: "Low",
+      due_date: new Date().toISOString().slice(0, 10),
+      completed: false,
+    };
+  });
 
   const submitTask = async () => {
     if (
@@ -45,7 +43,6 @@ export const EditTasks = (props: {
     ) {
       return;
     }
-    setButtonLoading(true);
     const payload: ManageTask = {
       board_object: {
         title: props.boardData.title,
@@ -67,10 +64,10 @@ export const EditTasks = (props: {
         taskData.priority,
       board: props.boardData.id,
     };
-    await updateTask(props.taskId, payload, props.boardData.id);
-    setButtonLoading(false);
+
+    props.setTasksCB(taskData);
     props.setIsModalOpenCB(false);
-    window.location.reload();
+    await updateTask(props.taskId, payload, props.boardData.id);
   };
 
   return (
@@ -200,7 +197,7 @@ export const EditTasks = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            {buttonLoading ? "Loading..." : "Update Task"}
+            Update
           </button>
         </div>
       </form>
