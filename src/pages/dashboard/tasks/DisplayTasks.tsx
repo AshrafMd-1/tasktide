@@ -11,7 +11,7 @@ import {
   TaskConverter,
 } from "../../../utils/AppUtils";
 import { deleteTask, updateTask } from "../../../utils/FetchRequests";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Modal from "../../../components/Modal";
 import { EditTasks } from "./manage tasks/EditTask";
 import { ManageTask } from "../../../types/RequestTypes";
