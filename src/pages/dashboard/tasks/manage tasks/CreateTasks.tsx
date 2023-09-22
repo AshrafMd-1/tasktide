@@ -58,7 +58,7 @@ export const CreateTasks = (props: {
         taskData.priority,
       board: props.boardData.id,
     };
-    const res=await createTask(payload, props.boardData.id);
+    const res = await createTask(payload, props.boardData.id);
     props.setAllTasksCB([...props.allTasks, res]);
     setButtonLoading(false);
     props.setIsModalOpenCB(false);

@@ -86,7 +86,9 @@ const AllStatus = (props: { id: string }) => {
         <div className="flex justify-between items-center mb-5">
           <div>
             <h1 className="text-4xl text-gray-800">{boardData.title}</h1>
-            <h1 className="text-2xl italic ml-2 text-gray-800">{boardData.description}</h1>
+            <h1 className="text-2xl italic ml-2 text-gray-800">
+              {boardData.description}
+            </h1>
           </div>
 
           <button

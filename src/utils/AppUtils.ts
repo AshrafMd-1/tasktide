@@ -23,7 +23,7 @@ export const DaysRemaining = (dueDate: string) => {
   const due = new Date(dueDate);
   const diff = due.getTime() - today.getTime();
   if (diff < 0) return -1;
-  return Math.ceil(diff / (1000 * 3600 * 24));
+  return Math.ceil(diff / (1000 * 3600 * 24)) - 1;
 };
 
 const GetEmojiBasedOnDays = (days: number) => {
@@ -62,14 +62,21 @@ export const GetDateColor = (days: string) => {
   const daysRemaining = DaysRemaining(days);
   if (daysRemaining <= 0) {
     return "red";
+  } else if (daysRemaining < 2) {
+    return "darkorange";
   } else if (daysRemaining < 3) {
     return "orange";
+  } else if (daysRemaining < 4) {
+    return "lightorange";
   } else if (daysRemaining < 7) {
     return "yellow";
+  } else if (daysRemaining < 14) {
+    return "lightgreen";
   } else {
     return "green";
   }
 };
+
 export const TaskSorterBasedOnPriorityAndDateAndCompleted = (
   tasks: ManageTask[],
 ) => {

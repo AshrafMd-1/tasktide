@@ -3,10 +3,10 @@ import {
   GetStatusType,
   GetTaskType,
 } from "../../../../types/DataTypes";
-import {  useState } from "react";
+import { useState } from "react";
 import { updateTask } from "../../../../utils/FetchRequests";
 import { ManageTask } from "../../../../types/RequestTypes";
-import { GetPriorityColor, TaskConverter } from "../../../../utils/AppUtils";
+import { GetPriorityColor } from "../../../../utils/AppUtils";
 import { PriorityOptions } from "../../../../components/Utils";
 
 export const EditTasks = (props: {
@@ -14,21 +14,11 @@ export const EditTasks = (props: {
   statusData: GetStatusType;
   boardData: GetBoardType;
   taskId: number;
-  allTasks: ManageTask[];
+  taskData: GetTaskType;
   setTasksCB: (value: GetTaskType) => void;
 }) => {
   const [taskData, setTaskData] = useState<GetTaskType>(() => {
-    const task = props.allTasks.find((task) => task.id === props.taskId);
-    if (task) {
-      return TaskConverter(task);
-    }
-    return {
-      title: "",
-      description: "",
-      priority: "Low",
-      due_date: new Date().toISOString().slice(0, 10),
-      completed: false,
-    };
+    return props.taskData;
   });
 
   const submitTask = async () => {
@@ -160,7 +150,10 @@ export const EditTasks = (props: {
               name="due_date"
               id="due_date"
               onChange={(e) =>
-                setTaskData({ ...taskData, due_date: e.target.value })
+                setTaskData({
+                  ...taskData,
+                  due_date: new Date(e.target.value).toISOString().slice(0, 10),
+                })
               }
             />
             <label className="text-xl text-center text-red-500">

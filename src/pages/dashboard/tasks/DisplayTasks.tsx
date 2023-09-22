@@ -11,7 +11,7 @@ import {
   TaskConverter,
 } from "../../../utils/AppUtils";
 import { deleteTask, updateTask } from "../../../utils/FetchRequests";
-import {  useState } from "react";
+import { useState } from "react";
 import Modal from "../../../components/Modal";
 import { EditTasks } from "./manage tasks/EditTask";
 import { ManageTask } from "../../../types/RequestTypes";
@@ -235,7 +235,7 @@ export const DisplayTasks = (props: {
             boardData={props.boardData}
             setIsModalOpenCB={setIsModalOpen}
             taskId={task.id}
-            allTasks={props.allTasks}
+            taskData={task}
             setTasksCB={(value: GetTaskType) => setTask(value)}
           />
         </Modal>
