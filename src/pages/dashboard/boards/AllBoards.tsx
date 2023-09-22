@@ -1,15 +1,18 @@
 import { DashboardContainer } from "../DashboardContainer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../../../components/Modal";
 import { CreateBoard } from "./manage boards/CreateBoard";
 import { BoardDisplay } from "./BoardDisplay";
 import { navigate } from "raviger";
 import { GetBoardType } from "../../../types/DataTypes";
+import { getBoards } from "../../../utils/FetchRequests";
+import { LoadingScreen } from "../../../components/LoadingScreen";
 
 const AllBoards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [boardData, setBoardData] = useState<GetBoardType[]>([]);
   const [boardId, setBoardId] = useState<number | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
   const [currentUser] = useState(() => {
     const user =
       localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -19,7 +22,36 @@ const AllBoards = () => {
     return null;
   });
 
+  useEffect(() => {
+    const fetchBoardDetails = async () => {
+      return await getBoards();
+    };
+    fetchBoardDetails()
+      .then((res) => {
+        if (res.results.length === 0) {
+          setLoading(false);
+          return;
+        } else {
+          setBoardData(res.results);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  }, []);
+
   if (!currentUser) navigate("/login");
+
+  if (loading) {
+    return (
+      <DashboardContainer>
+        <LoadingScreen />
+      </DashboardContainer>
+    );
+  }
+
   return (
     <DashboardContainer>
       <div>

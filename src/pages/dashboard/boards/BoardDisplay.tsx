@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { GetBoardType } from "../../../types/DataTypes";
-import { LoadingScreen } from "../../../components/LoadingScreen";
 import Modal from "../../../components/Modal";
 import { EditBoard } from "./manage boards/EditBoard";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { Link } from "raviger";
-import { deleteBoard, getBoards } from "../../../utils/FetchRequests";
+import { deleteBoard } from "../../../utils/FetchRequests";
 
 export const BoardDisplay = (props: {
   boardId: number | undefined;
@@ -13,32 +12,7 @@ export const BoardDisplay = (props: {
   setBoardIdCB: (value: number | undefined) => void;
   setBoardDataCB: (value: GetBoardType[]) => void;
 }) => {
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { setBoardDataCB } = props;
-  useEffect(() => {
-    const fetchBoardDetails = async () => {
-      return await getBoards();
-    };
-    fetchBoardDetails()
-      .then((res) => {
-        if (res.results.length === 0) {
-          setLoading(false);
-          return;
-        } else {
-          setBoardDataCB(res.results);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
-  }, [setBoardDataCB]);
-
-  if (loading) {
-    return <LoadingScreen />;
-  }
 
   if (props.BoardData.length === 0) {
     return (

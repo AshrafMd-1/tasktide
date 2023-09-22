@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ManageBoard } from "../../../../types/RequestTypes";
 import { updateBoard } from "../../../../utils/FetchRequests";
 import { GetBoardType } from "../../../../types/DataTypes";
@@ -9,23 +9,23 @@ export const EditBoard = (props: {
   boardId: number;
   setBoardDataCB: (value: GetBoardType[]) => void;
 }) => {
-  const [updateBoardDetails, setUpdateBoardDetails] = useState<ManageBoard>({
-    title: "",
-    description: "",
-  });
-  const [buttonLoading, setButtonLoading] = useState(false);
-
-  useEffect(() => {
-    const currentBoard = props.boardData.find(
-      (board) => board.id === props.boardId,
-    );
-    if (currentBoard) {
-      setUpdateBoardDetails({
-        title: currentBoard.title,
-        description: currentBoard.description,
-      });
-    }
-  }, [props.boardData, props.boardId]);
+  const [updateBoardDetails, setUpdateBoardDetails] = useState<ManageBoard>(
+    () => {
+      const currentBoard = props.boardData.find(
+        (board) => board.id === props.boardId,
+      );
+      if (currentBoard) {
+        return {
+          title: currentBoard.title,
+          description: currentBoard.description,
+        };
+      }
+      return {
+        title: "",
+        description: "",
+      };
+    },
+  );
 
   const submitBoard = async () => {
     if (
@@ -34,20 +34,28 @@ export const EditBoard = (props: {
     ) {
       return;
     }
-    setButtonLoading(true);
-    const res = await updateBoard(props.boardId, updateBoardDetails);
-    const newBoardData = props.boardData.filter(
+    const newBoard = props.boardData.filter(
       (board) => board.id !== props.boardId,
     );
-    props.setBoardDataCB([...newBoardData, res]);
-    setButtonLoading(false);
+
+    const currentBoard = props.boardData.find(
+      (board) => board.id === props.boardId,
+    );
+
+    if (currentBoard) {
+      currentBoard.title = updateBoardDetails.title;
+      currentBoard.description = updateBoardDetails.description;
+      props.setBoardDataCB([...newBoard, currentBoard]);
+    }
+
     props.setIsModalOpenCB(false);
+    await updateBoard(props.boardId, updateBoardDetails);
   };
 
   return (
     <div className="flex justify-center items-center flex-col">
       <div className="mx-auto">
-        <h1 className="text-4xl text-gray-800">Edit Board</h1>
+        <h1 className="text-4xl text-gray-800">Update Board</h1>
       </div>
       <hr className="my-5 w-3/4 mx-auto border-2 border-gray-500 rounded-lg" />
       <form>
@@ -111,7 +119,7 @@ export const EditBoard = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            {buttonLoading ? "Loading..." : "Update"}
+            Update
           </button>
         </div>
       </form>

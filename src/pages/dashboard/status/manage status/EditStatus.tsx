@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ManageStatus } from "../../../../types/RequestTypes";
 import { updateStatus } from "../../../../utils/FetchRequests";
 import { GetStatusType } from "../../../../types/DataTypes";
@@ -9,44 +9,48 @@ export const EditStatus = (props: {
   statusData: GetStatusType[];
   setStatusDataCB: (value: GetStatusType[]) => void;
 }) => {
-  const [updateStatusData, setUpdateStatusData] = useState<ManageStatus>({
-    title: "",
-    description: "",
-  });
   const [boardId, setBoardId] = useState<number>(0);
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
-
-  useEffect(() => {
+  const [updateStatusData, setUpdateStatusData] = useState<ManageStatus>(() => {
     const currentStatus = props.statusData.find(
       (status) => status.id === props.statusId,
     );
-    setUpdateStatusData({
+    if (currentStatus) {
+      setBoardId(Number(currentStatus.description.split("|BOARD|")[1]) || 0);
+    }
+    return {
       title: currentStatus?.title || "",
       description: currentStatus?.description.split("|BOARD|")[0] || "",
-    });
-    setBoardId(Number(currentStatus?.description.split("|BOARD|")[1]));
-  }, [props.statusId, props.statusData]);
+    };
+  });
 
   const submitStatus = async () => {
     if (updateStatusData.title === "" || updateStatusData.description === "")
       return;
-    setButtonLoading(true);
     const payload = {
       title: updateStatusData.title,
       description: updateStatusData.description + "|BOARD|" + boardId,
     };
     const newStatusData =
       props.statusData.filter((item) => item.id !== props.statusId) || [];
-    const res = await updateStatus(props.statusId, payload);
-    props.setStatusDataCB([...newStatusData, res]);
-    setButtonLoading(false);
+
+    const currentStatus = props.statusData.find(
+      (status) => status.id === props.statusId,
+    );
+
+    if (currentStatus) {
+      currentStatus.title = updateStatusData.title;
+      currentStatus.description =
+        updateStatusData.description + "|BOARD|" + boardId;
+      props.setStatusDataCB([...newStatusData, currentStatus]);
+    }
     props.setIsStatusModalOpenCB(false);
+    await updateStatus(props.statusId, payload);
   };
 
   return (
     <div className="flex justify-center items-center flex-col">
       <div className="mx-auto">
-        <h1 className="text-4xl text-gray-800">Edit Board</h1>
+        <h1 className="text-4xl text-gray-800">Update List</h1>
       </div>
       <hr className="my-5 w-3/4 mx-auto border-2 border-gray-500 rounded-lg" />
       <form>
@@ -110,7 +114,7 @@ export const EditStatus = (props: {
             }}
             className="bg-gradient-to-r from-purple-400 to-blue-500 hover:from-pink-500 hover:to-orange-500 text-white font-semibold px-6 py-3 rounded-md "
           >
-            {buttonLoading ? "Loading..." : "Update"}
+            Update
           </button>
         </div>
       </form>
