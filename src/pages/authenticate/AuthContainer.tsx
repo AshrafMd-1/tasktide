@@ -12,7 +12,10 @@ export const AuthContainer = (props: {
   remember: boolean;
 }) => {
   const [error, setError] = React.useState<string>("");
+  const [loading, setLoading] = React.useState<boolean>(false);
+
   const handleSubmit = async () => {
+    setLoading(true);
     if (props.title === "Sign Up") {
       try {
         const response = await newRegistration(props.formData as RegisterUser);
@@ -38,6 +41,7 @@ export const AuthContainer = (props: {
         console.log(e);
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -60,7 +64,13 @@ export const AuthContainer = (props: {
             className="bg-blue-500 w-full hover:bg-blue-700 text-white font-bold h-1/2 py-2 px-4 rounded flex items-center justify-center"
             onClick={handleSubmit}
           >
-            {props.title}
+            {loading
+              ? props.title === "Sign Up"
+                ? "Signing Up....."
+                : "Logging In....."
+              : props.title === "Sign Up"
+              ? "Sign Up"
+              : "Login"}
           </button>
           {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           <Link
