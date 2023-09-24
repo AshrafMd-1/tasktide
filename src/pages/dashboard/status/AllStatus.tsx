@@ -57,10 +57,11 @@ const AllStatus = (props: { id: string }) => {
     fetchData();
   }, [props.id]);
 
-  if (currentUser === null) {
-    navigate("/login");
-    return null;
-  }
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser]);
 
   if (loading) {
     return (

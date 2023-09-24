@@ -1,5 +1,5 @@
 import { AuthContainer } from "../AuthContainer";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { RegisterUser } from "../../../types/RequestTypes";
 import { SignupReducerAction } from "../../../types/AuthReducerTypes";
 import { navigate } from "raviger";
@@ -37,10 +37,11 @@ const Signup = () => {
     return null;
   });
 
-  if (currentUser) {
-    navigate("/dashboard");
-    return null;
-  }
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/dashboard");
+    }
+  }, [currentUser]);
 
   return (
     <AuthContainer

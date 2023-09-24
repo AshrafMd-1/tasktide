@@ -35,10 +35,11 @@ const AllTodo = () => {
     fetchData();
   }, []);
 
-  if (currentUser === null) {
-    navigate("/login");
-    return null;
-  }
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser]);
 
   if (loading) {
     return (

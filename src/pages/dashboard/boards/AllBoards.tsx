@@ -23,6 +23,12 @@ const AllBoards = () => {
   });
 
   useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
     const fetchBoardDetails = async () => {
       return await getBoards();
     };
@@ -41,11 +47,6 @@ const AllBoards = () => {
         console.log(err);
       });
   }, []);
-
-  if (!currentUser) {
-    navigate("/login");
-    return null;
-  }
 
   if (loading) {
     return (

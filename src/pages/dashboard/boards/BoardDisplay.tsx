@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { GetBoardType } from "../../../types/DataTypes";
+import { GetBoardType, GetStatusType } from "../../../types/DataTypes";
 import Modal from "../../../components/Modal";
 import { EditBoard } from "./manage boards/EditBoard";
 import { ErrorPage } from "../../../components/ErrorPage";
 import { Link } from "raviger";
-import { deleteBoard } from "../../../utils/FetchRequests";
+import {
+  deleteBoard,
+  deleteStatus,
+  getStatus,
+} from "../../../utils/FetchRequests";
 
 export const BoardDisplay = (props: {
   boardId: number | undefined;
@@ -88,6 +92,22 @@ export const BoardDisplay = (props: {
                     await deleteBoard(board.id).catch((err) => {
                       console.log(err);
                     });
+                    const getAllStatus = await getStatus();
+                    if (getAllStatus) {
+                      const allStatus: GetStatusType[] = getAllStatus.results;
+                      const newStatus = allStatus.filter(
+                        (item) =>
+                          Number(item.description.split("|BOARD|")[1]) ===
+                          board.id,
+                      );
+                      for (const status of newStatus) {
+                        if (status.id) {
+                          await deleteStatus(status.id).catch((err) => {
+                            console.log(err);
+                          });
+                        }
+                      }
+                    }
                   }}
                 >
                   <svg
