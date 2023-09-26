@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  deleteTask,
   getBoardDetail,
   getStatus,
   getTasks,
@@ -27,6 +28,7 @@ export const DisplayTaskInTile = (props: { id: string }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const boardResult = await getBoardDetail(Number(props.id));
         setBoardData(boardResult);
 
@@ -79,7 +81,7 @@ export const DisplayTaskInTile = (props: { id: string }) => {
   if (loading) {
     return (
       <div
-        className="flex justify-center items-center"
+        className="flex justify-center items-center ml-auto absolute top-0 left-0 right-0 bottom-0"
         style={{ height: "calc(100vh - 64px)" }}
       >
         <LoadingScreen />
@@ -94,6 +96,16 @@ export const DisplayTaskInTile = (props: { id: string }) => {
         message="Board Not Found"
         description="The board you are looking for does not exist or the provided ID is incorrect."
       />
+    );
+  }
+
+  if (taskData.length === 0) {
+    return (
+      <div className="flex justify-between mt-5 mx-auto items-center">
+        <div className="flex gap-4 flex-wrap">
+          <h1 className="text-4xl text-gray-800">No Tasks Found</h1>
+        </div>
+      </div>
     );
   }
 
@@ -190,6 +202,9 @@ export const DisplayTaskInTile = (props: { id: string }) => {
               <th className="px-6 py-3 bg-gray-50 text-gray-500 uppercase border-b border-gray-100">
                 Days Left
               </th>
+              <th className="px-6 py-3 bg-gray-50 text-gray-500 uppercase border-b border-gray-100">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -224,6 +239,42 @@ export const DisplayTaskInTile = (props: { id: string }) => {
                     : DaysRemaining(
                         task.description.split("|")[1].split(":")[1],
                       )}
+                </td>
+                <td className="border-b border-gray-100 px-6 py-4">
+                  <button
+                    className="bg-red-400 hover:bg-red-500 text-white font-semibold px-2 py-1 rounded-md"
+                    onClick={async () => {
+                      if (
+                        task.id === undefined ||
+                        task.board === undefined ||
+                        !window.confirm(
+                          "Are you sure you want to delete this task?",
+                        )
+                      ) {
+                        return;
+                      }
+                      const allTasks = taskData.filter(
+                        (item) => item.id !== task.id,
+                      );
+                      setTaskData(allTasks);
+                      await deleteTask(task.id, task.board).catch((err) => {
+                        console.log(err);
+                      });
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
                 </td>
               </tr>
             ))}

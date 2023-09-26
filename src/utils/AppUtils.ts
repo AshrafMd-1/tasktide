@@ -22,6 +22,7 @@ export const DaysRemaining = (dueDate: string) => {
   const today = new Date();
   const due = new Date(dueDate);
   const diff = due.getTime() - today.getTime();
+  if(dueDate === today.toISOString().split("T")[0]) return 0;
   if (diff < 0) return -1;
   return Math.ceil(diff / (1000 * 3600 * 24)) - 1;
 };
