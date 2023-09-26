@@ -19,7 +19,10 @@ export const DisplayTaskInTile = (props: { id: string }) => {
   const [taskData, setTaskData] = useState<ManageTask[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [taskFilter, setTaskFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
+  const [completedFilter, setCompletedFilter] = useState("");
+  const [dueDateFilter, setDueDateFilter] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,9 +53,26 @@ export const DisplayTaskInTile = (props: { id: string }) => {
     return (
       (taskFilter === "" ||
         task.title.toLowerCase().includes(taskFilter.toLowerCase())) &&
+      (statusFilter === "" ||
+        task.status_object.title
+          .toLowerCase()
+          .includes(statusFilter.toLowerCase())) &&
       (priorityFilter === "" ||
         task.description.split("|")[3].split(":")[1].toLowerCase() ===
-          priorityFilter.toLowerCase())
+          priorityFilter.toLowerCase()) &&
+      (completedFilter === "" ||
+        task.description.split("|")[2].split(":")[1].toLowerCase() ===
+          completedFilter.toLowerCase()) &&
+      (dueDateFilter === "" ||
+        DaysRemaining(task.description.split("|")[1].split(":")[1]) === -1 ||
+        (dueDateFilter === "Overdue" &&
+          DaysRemaining(task.description.split("|")[1].split(":")[1]) === -1) ||
+        (dueDateFilter === "Today" &&
+          DaysRemaining(task.description.split("|")[1].split(":")[1]) === 0) ||
+        (dueDateFilter === "Tomorrow" &&
+          DaysRemaining(task.description.split("|")[1].split(":")[1]) === 1) ||
+        (dueDateFilter === "Later" &&
+          DaysRemaining(task.description.split("|")[1].split(":")[1]) >= 1))
     );
   });
 
@@ -78,18 +98,39 @@ export const DisplayTaskInTile = (props: { id: string }) => {
   }
 
   return (
-    <div className="block mt-5 w-full overflow-x-auto">
-      <div className="flex justify-start items-center mb-5">
+    <div className="block mt-5 mx-2 w-full overflow-x-auto">
+      <div className="flex justify-start items-center mx-5 mb-5">
         <input
           type="text"
           placeholder="Filter by Task"
-          className="block  p-2 border border-gray-300 rounded mt-2"
+          className="block  p-2 border border-gray-300 rounded-xl mt-2"
           value={taskFilter}
           onChange={(e) => setTaskFilter(e.target.value)}
         />
         <select
+          value={statusFilter}
+          className="block  p-2 border border-gray-300 rounded-xl mt-2 ml-2"
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="">Filter by List</option>
+          {statusData.map((status) => (
+            <option key={status.id} value={status.title}>
+              {status.title}
+            </option>
+          ))}
+        </select>
+        <select
+          value={completedFilter}
+          className="block  p-2 border border-gray-300 rounded-xl mt-2 ml-2"
+          onChange={(e) => setCompletedFilter(e.target.value)}
+        >
+          <option value="">Filter by Completed</option>
+          <option value="false">In-Complete</option>
+          <option value="true">Complete</option>
+        </select>
+        <select
           value={priorityFilter}
-          className="block  p-2 border border-gray-300 rounded mt-2 ml-2"
+          className="block  p-2 border border-gray-300 rounded-xl mt-2 ml-2"
           onChange={(e) => setPriorityFilter(e.target.value)}
         >
           <option value="">Filter by Priority</option>
@@ -97,16 +138,45 @@ export const DisplayTaskInTile = (props: { id: string }) => {
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
+        <select
+          value={dueDateFilter}
+          className="block  p-2 border border-gray-300 rounded-xl mt-2 ml-2"
+          onChange={(e) => setDueDateFilter(e.target.value)}
+        >
+          <option value="">Filter by Due Date</option>
+          <option value="Overdue">Overdue</option>
+          <option value="Today">Today</option>
+          <option value="Tomorrow">Tomorrow</option>
+          <option value="Later">Later</option>
+        </select>
+        <button
+          className="block bg-blue-500 text-white p-2 font-bold rounded-xl mt-2 ml-2 hover:bg-red-500"
+          onClick={() => {
+            setTaskFilter("");
+            setStatusFilter("");
+            setPriorityFilter("");
+            setCompletedFilter("");
+            setDueDateFilter("");
+          }}
+        >
+          Clear Filters
+        </button>
       </div>
       <div>
         <table className="table-auto w-full bg-white">
           <thead>
             <tr>
               <th className="px-6 py-3 bg-gray-50 text-gray-500 uppercase border-b border-r border-gray-100">
+                S.no
+              </th>
+              <th className="px-6 py-3 bg-gray-50 text-gray-500 uppercase border-b border-r border-gray-100">
                 Task
               </th>
               <th className="px-6 py-3 bg-gray-50 text-gray-500 uppercase border-b border-r border-gray-100">
                 Description
+              </th>
+              <th className="px-6 py-3 bg-gray-50 text-gray-500 uppercase border-b border-r border-gray-100">
+                List
               </th>
               <th className="px-6 py-3 bg-gray-50 text-gray-500 uppercase border-b border-r border-gray-100">
                 Completed
@@ -123,13 +193,19 @@ export const DisplayTaskInTile = (props: { id: string }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredTasks.map((task) => (
+            {filteredTasks.map((task, index) => (
               <tr key={task.id}>
+                <td className="border-b border-r border-gray-100 px-6 py-4">
+                  {index + 1}
+                </td>
                 <td className="border-b border-r border-gray-100 px-6 py-4">
                   {task.title}
                 </td>
                 <td className="border-b border-r border-gray-100 px-6 py-4">
                   {task.description.split("|")[0]}
+                </td>
+                <td className="border-b border-r border-gray-100 px-6 py-4">
+                  {task.status_object.title}
                 </td>
                 <td className="border-b border-r border-gray-100 px-6 py-4">
                   {task.description.split("|")[2].split(":")[1]}
