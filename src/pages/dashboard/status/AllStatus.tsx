@@ -100,7 +100,7 @@ const AllStatus = (props: { id: string }) => {
           </button>
         </div>
         <div className="flex justify-between items-center">
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex gap-4 w-full overflow-x-auto pb-4  justify-start items-start">
             {statusData.map(
               (status) =>
                 boardData.id &&

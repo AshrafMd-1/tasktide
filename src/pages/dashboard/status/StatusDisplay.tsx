@@ -23,7 +23,7 @@ export const StatusDisplay = (props: {
   return (
     <div className="bg-white flex flex-col  shadow-lg rounded-lg px-4 py-6 w-100 m-2">
       <div className="flex justify-between mb-3 gap-3  items-center">
-        <h1 className="text-xl font-bold text-gray-800 break-all">
+        <h1 className="text-xl font-bold text-gray-800 mr-2">
           {props.statusData.title}
         </h1>
         <div className="flex justify-between items-center gap-2">
