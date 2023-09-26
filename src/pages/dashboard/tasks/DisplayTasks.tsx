@@ -44,7 +44,7 @@ export const DisplayTasks = (props: {
       style={{ opacity: task.completed ? 0.5 : 1 }}
     >
       <div className="flex w-80 gap-1 ">
-        <div className="flex flex-col justify-between items-start">
+        <div className="flex flex-col justify-between  items-start">
           <h1 className="text-2xl break-words text-gray-800">{task.title}</h1>
           <p className="text-sm break-words text-gray-800">
             {task.description}

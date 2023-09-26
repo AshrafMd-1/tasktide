@@ -32,7 +32,8 @@ export const CreateTasks = (props: {
       taskData.priority === "" ||
       taskData.due_date === "" ||
       props.statusData.id === undefined ||
-      props.boardData.id === undefined
+      props.boardData.id === undefined ||
+              new Date(taskData.due_date).getTime() < new Date().getTime()
     ) {
       return;
     }
@@ -159,6 +160,9 @@ export const CreateTasks = (props: {
             />
             <label className="text-xl text-center text-red-500">
               {taskData.due_date === "" ? "Due Date is required" : ""}
+               {new Date(taskData.due_date).getTime() < new Date().getTime()
+                ? "Due Date cannot be in the past"
+                : ""}
             </label>
           </div>
           <div className="grid grid-cols-2 gap-4">
