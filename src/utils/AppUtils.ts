@@ -19,12 +19,11 @@ export const TaskConverter = (task: ManageTask) => {
 };
 
 export const DaysRemaining = (dueDate: string) => {
-  const today = new Date();
-  const due = new Date(dueDate);
+  const today = new Date(new Date().setHours(0, 0, 0, 0));
+  const due = new Date(new Date(dueDate).setHours(0, 0, 0, 0));
   const diff = due.getTime() - today.getTime();
-  if(dueDate === today.toISOString().split("T")[0]) return 0;
   if (diff < 0) return -1;
-  return Math.ceil(diff / (1000 * 3600 * 24)) - 1;
+  return Math.ceil(diff / (1000 * 3600 * 24));
 };
 
 const GetEmojiBasedOnDays = (days: number) => {
@@ -84,8 +83,8 @@ export const TaskSorterBasedOnPriorityAndDateAndCompleted = (
   return tasks.sort((a, b) => {
     const aPriority = a.description.split("|")[3].split(":")[1];
     const bPriority = b.description.split("|")[3].split(":")[1];
-    const aDueDate = new Date(a.description.split("|")[1].split(":")[1]);
-    const bDueDate = new Date(b.description.split("|")[1].split(":")[1]);
+    const aDueDate = DaysRemaining(a.description.split("|")[1].split(":")[1]);
+    const bDueDate = DaysRemaining(b.description.split("|")[1].split(":")[1]);
     const aCompleted = a.description.split("|")[2].split(":")[1] === "true";
     const bCompleted = b.description.split("|")[2].split(":")[1] === "true";
     if (aCompleted && !bCompleted) return 1;

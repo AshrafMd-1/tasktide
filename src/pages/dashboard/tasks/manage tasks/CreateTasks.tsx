@@ -7,7 +7,7 @@ import { useState } from "react";
 import { ManageTask } from "../../../../types/RequestTypes";
 import { createTask } from "../../../../utils/FetchRequests";
 import { PriorityOptions } from "../../../../components/Utils";
-import { GetPriorityColor } from "../../../../utils/AppUtils";
+import { DaysRemaining, GetPriorityColor } from "../../../../utils/AppUtils";
 
 export const CreateTasks = (props: {
   setIsModalOpenCB: (value: boolean) => void;
@@ -20,7 +20,7 @@ export const CreateTasks = (props: {
     title: "",
     description: "",
     priority: "Low",
-    due_date: new Date().toISOString().slice(0, 10),
+    due_date: new Date().toLocaleString().split(",")[0].split("/").join("-"),
     completed: false,
   });
   const [buttonLoading, setButtonLoading] = useState<boolean>(false);
@@ -33,7 +33,7 @@ export const CreateTasks = (props: {
       taskData.due_date === "" ||
       props.statusData.id === undefined ||
       props.boardData.id === undefined ||
-              new Date(taskData.due_date).getTime() < new Date().getTime()
+      DaysRemaining(taskData.due_date) === -1
     ) {
       return;
     }
@@ -160,7 +160,7 @@ export const CreateTasks = (props: {
             />
             <label className="text-xl text-center text-red-500">
               {taskData.due_date === "" ? "Due Date is required" : ""}
-               {new Date(taskData.due_date).getTime() < new Date().getTime()
+              {DaysRemaining(taskData.due_date) === -1
                 ? "Due Date cannot be in the past"
                 : ""}
             </label>

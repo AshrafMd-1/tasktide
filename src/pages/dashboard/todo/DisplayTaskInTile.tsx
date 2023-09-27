@@ -66,7 +66,6 @@ export const DisplayTaskInTile = (props: { id: string }) => {
         task.description.split("|")[2].split(":")[1].toLowerCase() ===
           completedFilter.toLowerCase()) &&
       (dueDateFilter === "" ||
-        DaysRemaining(task.description.split("|")[1].split(":")[1]) === -1 ||
         (dueDateFilter === "Overdue" &&
           DaysRemaining(task.description.split("|")[1].split(":")[1]) === -1) ||
         (dueDateFilter === "Today" &&
@@ -74,7 +73,7 @@ export const DisplayTaskInTile = (props: { id: string }) => {
         (dueDateFilter === "Tomorrow" &&
           DaysRemaining(task.description.split("|")[1].split(":")[1]) === 1) ||
         (dueDateFilter === "Later" &&
-          DaysRemaining(task.description.split("|")[1].split(":")[1]) >= 1))
+          DaysRemaining(task.description.split("|")[1].split(":")[1]) >= 2))
     );
   });
 

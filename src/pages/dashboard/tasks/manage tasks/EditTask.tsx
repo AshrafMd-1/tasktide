@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 import { updateTask } from "../../../../utils/FetchRequests";
 import { ManageTask } from "../../../../types/RequestTypes";
-import { GetPriorityColor } from "../../../../utils/AppUtils";
+import { DaysRemaining, GetPriorityColor } from "../../../../utils/AppUtils";
 import { PriorityOptions } from "../../../../components/Utils";
 
 export const EditTasks = (props: {
@@ -29,7 +29,7 @@ export const EditTasks = (props: {
       taskData.due_date === "" ||
       props.statusData.id === undefined ||
       props.boardData.id === undefined ||
-      new Date(taskData.due_date).getTime() < new Date().getTime()
+      DaysRemaining(taskData.due_date) === -1
     ) {
       return;
     }
@@ -158,7 +158,7 @@ export const EditTasks = (props: {
             />
             <label className="text-xl text-center text-red-500">
               {taskData.due_date === "" ? "Due Date is required" : ""}
-              {new Date(taskData.due_date).getTime() < new Date().getTime()
+              {DaysRemaining(taskData.due_date) === -1
                 ? "Due Date cannot be in the past"
                 : ""}
             </label>

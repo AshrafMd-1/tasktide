@@ -9,7 +9,7 @@ import {
   getStatus,
   getTasks,
 } from "../../../utils/FetchRequests";
-import { TaskConverter } from "../../../utils/AppUtils";
+import { DaysRemaining, TaskConverter } from "../../../utils/AppUtils";
 import {
   GetBoardType,
   GetStatusType,
@@ -127,14 +127,19 @@ const Home = () => {
         <h1 className="text-3xl font-bold text-center text-gray-800 ">
           Account Overview
         </h1>
-        <p className="text-gray-500 text-center ">
+        <p className="text-xl text-gray-500 text-center ">
           Current status of your account
+        </p>
+        <p className="text-orange-400 text-sm font-bold text-center">
+          [only shows tasks that are not completed]
         </p>
         <hr className="my-5 border-2" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  gap-4">
           <div className="flex justify-between items-center shadow-lg rounded-lg p-5">
             <h1 className="text-2xl text-gray-800">Tasks</h1>
-            <p className="text-gray-500 text-xl font-bold">{taskData.length}</p>
+            <p className="text-gray-500 text-xl font-bold">
+              {taskData.filter((task) => !task.completed).length}
+            </p>
           </div>
           <div className="flex justify-between items-center shadow-lg rounded-lg p-5">
             <h1 className="text-2xl text-gray-800">Boards</h1>
@@ -148,12 +153,6 @@ const Home = () => {
               {statusData.length}
             </p>
           </div>
-          <div className="flex justify-between items-center shadow-lg rounded-lg p-5">
-            <h1 className="text-2xl text-gray-800">Completed Tasks</h1>
-            <p className="text-gray-500 text-xl font-bold">
-              {taskData.filter((task) => task.completed).length}
-            </p>
-          </div>
         </div>
       </div>
       <div className="bg-white rounded-3xl p-8 mb-5 mr-4 ">
@@ -161,8 +160,11 @@ const Home = () => {
           <h1 className="text-3xl font-bold text-center text-gray-800 ">
             Priority Overview
           </h1>
-          <p className="text-gray-500 text-center ">
+          <p className=" text-xl text-gray-500 text-center ">
             Current priority of your tasks
+          </p>
+          <p className="text-orange-400 text-sm font-bold text-center">
+            [only shows tasks that are not completed]
           </p>
         </div>
         <hr className="my-5 border-2" />
@@ -170,20 +172,31 @@ const Home = () => {
           <div className="flex justify-between items-center shadow-lg rounded-lg p-5">
             <h1 className="text-2xl text-gray-800">Low Priority</h1>
             <p className="text-gray-500 text-xl font-bold">
-              {taskData.filter((task) => task.priority === "Low").length}
+              {
+                taskData.filter(
+                  (task) => task.priority === "Low" && !task.completed,
+                ).length
+              }
             </p>
           </div>
           <div className="flex justify-between items-center shadow-lg rounded-lg p-5">
             <h1 className="text-2xl text-gray-800">Medium Priority</h1>
             <p className="text-gray-500 text-xl font-bold">
-              {taskData.filter((task) => task.priority === "Medium").length}
+              {
+                taskData.filter(
+                  (task) => task.priority === "Medium" && !task.completed,
+                ).length
+              }
             </p>
           </div>
-
           <div className="flex justify-between items-center shadow-lg rounded-lg p-5">
             <h1 className="text-2xl text-gray-800">High Priority</h1>
             <p className="text-gray-500 text-xl font-bold">
-              {taskData.filter((task) => task.priority === "High").length}
+              {
+                taskData.filter(
+                  (task) => task.priority === "High" && !task.completed,
+                ).length
+              }
             </p>
           </div>
         </div>
@@ -193,8 +206,11 @@ const Home = () => {
           <h1 className="text-3xl font-bold text-center text-gray-800 ">
             Dues Overview
           </h1>
-          <p className="text-gray-500 text-center ">
+          <p className="text-xl text-gray-500 text-center ">
             Current dues of your tasks
+          </p>
+          <p className="text-orange-400 text-sm font-bold text-center">
+            [only shows tasks that are not completed]
           </p>
         </div>
         <hr className="my-5 border-2" />
@@ -205,7 +221,7 @@ const Home = () => {
               {
                 taskData.filter(
                   (task) =>
-                    new Date(task.due_date) < new Date() && !task.completed,
+                    DaysRemaining(task.due_date) === -1 && !task.completed,
                 ).length
               }
             </p>
@@ -216,7 +232,7 @@ const Home = () => {
               {
                 taskData.filter(
                   (task) =>
-                    new Date(task.due_date) === new Date() && !task.completed,
+                    DaysRemaining(task.due_date) === 0 && !task.completed,
                 ).length
               }
             </p>
@@ -227,12 +243,7 @@ const Home = () => {
               {
                 taskData.filter(
                   (task) =>
-                    new Date(
-                      new Date(task.due_date).getTime() + 24 * 60 * 60 * 1000,
-                    )
-                      .toString()
-                      .slice(0, 15) === new Date().toString().slice(0, 15) &&
-                    !task.completed,
+                    DaysRemaining(task.due_date) === 1 && !task.completed,
                 ).length
               }
             </p>
@@ -246,7 +257,12 @@ const Home = () => {
         <h1 className="text-3xl font-bold text-center text-gray-800 ">
           Pending Tasks Overview
         </h1>
-        <p className="text-gray-500 text-center ">Current pending tasks</p>
+        <p className="text-xl text-gray-500 text-center ">
+          Current pending tasks
+        </p>
+        <p className="text-orange-400 text-sm font-bold text-center">
+          [only shows tasks that are not completed]
+        </p>
         <div>
           <TaskDisplayOverview
             taskData={taskData}
